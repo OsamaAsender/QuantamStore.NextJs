@@ -171,7 +171,7 @@ export default function Navbar() {
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2 text-xl">
         <img
-          src="/images/quantamLogo.png"
+          src="/images/quantamLogo2.png"
           alt="Logo"
           className="w-8 h-8 object-contain"
         />
@@ -231,6 +231,13 @@ export default function Navbar() {
                   onClick={() => setProfileOpen(false)}
                 >
                   Profile
+                </Link>
+                <Link
+                  href="/admin"
+                  className="block px-4 py-2 hover:bg-gray-100 transition"
+                  onClick={() => setProfileOpen(false)}
+                >
+                  Dashboard
                 </Link>
                 <button
                   type="button"

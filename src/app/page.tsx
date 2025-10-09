@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -34,7 +35,7 @@ export default function Home() {
           {/* Hero Image */}
           <div className="flex-1 flex justify-center">
             <Image
-              src="/images/genetic.png"
+              src="/images/quantamLogo.png"
               alt="Hero graphic"
               width={300}
               height={300}
@@ -50,118 +51,157 @@ export default function Home() {
             Featured Categories
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 text-center">
-            {/* Prebuilt PC */}
-            <div className="p-6 bg-white rounded shadow hover:shadow-lg transition">
-              <Image
-                src="/images/prebuilt.jpeg"
-                className="mx-auto"
-                alt="Prebuilt PC"
-                width={260}
-                height={160}
-              />
-              <h3 className="font-bold mt-4 mb-2">Prebuilt PCs</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                High-performance desktops ready to plug and play.
-              </p>
-              <a
-                href="/store/prebuilt"
-                className="text-indigo-600 hover:underline text-sm font-mono"
-              >
-                Browse PCs →
-              </a>
-            </div>
+            {/* Prebuilt PCS */}
+            <Link href="/store/prebuilt" className="group">
+              <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
+                <Image
+                  src="/images/prebuilt.jpeg"
+                  className="mx-auto"
+                  alt="Prebuilt PC"
+                  width={300}
+                  height={300}
+                />
+                <h3 className="font-bold mt-4 mb-2 group-hover:text-indigo-600 transition">
+                  Prebuilt PCs
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  High-performance desktops ready to plug and play.
+                </p>
+                <span className="text-indigo-600 hover:underline text-sm font-mono">
+                  Browse PCs →
+                </span>
+              </div>
+            </Link>
 
             {/* Headsets */}
-            <div className="p-6 bg-white rounded shadow hover:shadow-lg transition">
-              <Image
-                src="/images/headset.jpg"
-                className="mx-auto"
-                alt="Gaming Headset"
-                width={260}
-                height={160}
-              />
-              <h3 className="font-bold mt-4 mb-2">Gaming Headsets</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Immersive audio for competitive and casual play.
-              </p>
-              <a
-                href="/store/headsets"
-                className="text-indigo-600 hover:underline text-sm font-mono"
-              >
-                Shop Headsets →
-              </a>
-            </div>
+            <Link href="/store/headsets" className="group">
+              <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
+                <Image
+                  src="/images/headset.jpg"
+                  className="mx-auto"
+                  alt="Gaming Headset"
+                  width={300}
+                  height={150}
+                />
+                <h3 className="font-bold mt-4 mb-2 group-hover:text-indigo-600 transition">
+                  Gaming Headsets
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Immersive audio for competitive and casual play.
+                </p>
+                <span className="text-indigo-600 hover:underline text-sm font-mono">
+                  Shop Headsets →
+                </span>
+              </div>
+            </Link>
 
             {/* Monitors */}
-            <div className="p-6 bg-white rounded shadow hover:shadow-lg transition">
-              <Image
-                src="/images/monitor.jpeg"
-                className="mx-auto"
-                alt="Monitor"
-                width={260}
-                height={160}
-              />
-              <h3 className="font-bold mt-4 mb-2">Monitors</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Crisp visuals and fast refresh rates for every setup.
-              </p>
-              <a
-                href="/store/monitors"
-                className="text-indigo-600 hover:underline text-sm font-mono"
-              >
-                View Monitors →
-              </a>
-            </div>
+            <Link href="/store/monitors" className="group">
+              <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
+                <Image
+                  src="/images/monitor.jpeg"
+                  className="mx-auto"
+                  alt="Monitor"
+                  width={300}
+                  height={150}
+                />
+                <h3 className="font-bold mt-4 mb-2 group-hover:text-indigo-600 transition">
+                  Monitors
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Crisp visuals and fast refresh rates for every setup.
+                </p>
+                <span className="text-indigo-600 hover:underline text-sm font-mono">
+                  View Monitors →
+                </span>
+              </div>
+            </Link>
 
             {/* Storage Devices */}
-            <div className="p-6 bg-white rounded shadow hover:shadow-lg transition">
-              <Image
-                src="/images/ssd.jpg"
-                className="mx-auto"
-                alt="Storage Devices"
-                width={260}
-                height={160}
-              />
-              <h3 className="font-bold mt-4 mb-2">Storage Devices</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                SSDs, HDDs, and NVMe drives for speed and capacity.
-              </p>
-              <a
-                href="/store/storage"
-                className="text-indigo-600 hover:underline text-sm font-mono"
-              >
-                Explore Storage →
-              </a>
-            </div>
+            <Link href="/store/storage" className="group">
+              <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
+                <Image
+                  src="/images/ssd.jpg"
+                  className="mx-auto"
+                  alt="Storage Devices"
+                  width={180}
+                  height={150}
+                />
+                <h3 className="font-bold mt-4 mb-2 group-hover:text-indigo-600 transition">
+                  Storage Devices
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  SSDs, HDDs, and NVMe drives for speed and capacity.
+                </p>
+                <span className="text-indigo-600 hover:underline text-sm font-mono">
+                  Explore Storage →
+                </span>
+              </div>
+            </Link>
 
             {/* CPUs */}
-            <div className="p-6 bg-white rounded shadow hover:shadow-lg transition">
-              <Image src="/images/cpu.jpeg" alt="CPU" width={420} height={160} />
-              <h3 className="font-bold mt-4 mb-2">Processors</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Power your rig with the latest multi-core CPUs.
-              </p>
-              <a
-                href="/store/cpus"
-                className="text-indigo-600 hover:underline text-sm font-mono"
-              >
-                Browse CPUs →
-              </a>
-            </div>
+            <Link href="/store/cpus" className="group">
+              <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
+                <Image
+                  src="/images/cpu.jpeg"
+                  className="mx-auto"
+                  alt="CPU"
+                  width={320}
+                  height={150}
+                />
+                <h3 className="font-bold mt-4 mb-2 group-hover:text-indigo-600 transition">
+                  Processors
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Power your rig with the latest multi-core CPUs.
+                </p>
+                <span className="text-indigo-600 hover:underline text-sm font-mono">
+                  Browse CPUs →
+                </span>
+              </div>
+            </Link>
 
             {/* GPUs */}
-            <div className="p-6 bg-white rounded shadow hover:shadow-lg transition">
-              <Image src="/images/Gpu.jpeg" className="mx-auto" alt="GPU" width={400} height={160} />
-              <h3 className="font-bold mt-4 mb-2">Graphics Cards</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                Stunning visuals and performance for gaming and creation.
-              </p>
+            <Link href="/store/gpus" className="group">
+              <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
+                <Image
+                  src="/images/Gpu.jpeg"
+                  className="mx-auto"
+                  alt="GPU"
+                  width={300}
+                  height={150}
+                />
+                <h3 className="font-bold mt-4 mb-2 group-hover:text-indigo-600 transition">
+                  Graphics Cards
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Stunning visuals and performance for gaming and creation.
+                </p>
+                <span className="text-indigo-600 hover:underline text-sm font-mono">
+                  Shop GPUs →
+                </span>
+              </div>
+            </Link>
+
+            <div>
               <a
-                href="/store/gpus"
-                className="text-indigo-600 hover:underline text-sm font-mono"
+                href="/categories"
+                className="text-indigo-600 w-full hover:underline font-mono"
+              ></a>
+            </div>
+            <div>
+              <a
+                href="/categories"
+                className="text-indigo-600 w-full font-bold hover:underline font-mono"
               >
-                Shop GPUs →
+                See all Categories →
               </a>
+            </div>
+            <div>
+              <a
+                href="/categories"
+                className="text-indigo-600 w-full hover:underline font-mono"
+              ></a>
             </div>
           </div>
         </section>
