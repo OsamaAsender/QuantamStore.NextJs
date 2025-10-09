@@ -57,23 +57,24 @@ useEffect(() => {
 
   return (
     <div className="w-screen h-screen fade-in">
-      <div className="w-130 mx-auto shadow mt-10 p-20 bg-white rounded text-center">
-        <h1 className="text-4xl font-bold font-mono mb-5 text-teal-700">
+      <div className="max-w-md w-full mx-auto shadow mt-10 px-4 py-10 sm:px-6 md:px-10 bg-white rounded text-center">
+        <h1 className="text-4xl font-bold font-mono mb-5 text-indigo-700">
           Check Your Email
         </h1>
+        <hr className="text-slate-100 w-full mb-5" />
         <p className="text-lg font-mono text-gray-700 mb-4">
           If your email exists, a password reset link has been sent to:
         </p>
-        <p className="text-teal-600 font-bold text-lg mb-6">{email}</p>
+        <p className="text-indigo-600 font-bold text-lg mb-6">{email}</p>
 
         <div className="flex flex-col gap-4 items-center">
           <button
             onClick={handleResend}
             disabled={cooldown > 0 || loading}
-            className={`bg-teal-600 text-white rounded p-2 font-mono transition cursor-pointer w-60 ${
+            className={`bg-indigo-600 text-white rounded p-2 font-mono transition cursor-pointer w-full sm:w-60 ${
               cooldown > 0 || loading
                 ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-teal-700"
+                : "hover:bg-indigo-700"
             }`}
           >
             {loading ? (
@@ -89,7 +90,7 @@ useEffect(() => {
 
           <button
             onClick={() => router.push("/forgot-password")}
-            className="bg-slate-600 text-white rounded p-2 font-mono hover:bg-slate-700 transition cursor-pointer w-60"
+            className="bg-slate-600 text-white rounded p-2 font-mono w-full sm:w-60 hover:bg-slate-700 transition cursor-pointer "
           >
             Edit Email
           </button>

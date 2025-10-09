@@ -41,7 +41,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <div className="w-screen h-screen fade-in">
-      <div className="w-130 mx-auto shadow mt-10 py-20 bg-white rounded">
+      <div className="max-w-md w-full mx-auto shadow mt-10 px-4 py-10 sm:px-6 md:px-10 bg-white rounded">
         <h1 className="text-center text-4xl font-bold font-mono mb-5">
           Forgot Password
         </h1>
@@ -53,7 +53,7 @@ export default function ForgotPasswordPage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="form-control p-3 shadow rounded border border-gray-300 focus:border-teal-600 focus:outline-none focus:transition"
+            className="form-control p-3 shadow rounded border border-gray-300 focus:border-indigo-600 focus:outline-none focus:transition"
             placeholder="Enter your email"
             required
           />
@@ -61,8 +61,10 @@ export default function ForgotPasswordPage() {
             <button
               type="submit"
               disabled={loading}
-              className={`bg-teal-600 text-white rounded p-2 font-mono transition cursor-pointer w-full ${
-                loading ? "opacity-50 cursor-not-allowed" : "hover:bg-teal-700"
+              className={`bg-indigo-600 text-white rounded p-2 font-mono transition cursor-pointer w-full ${
+                loading
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-indigo-700"
               }`}
             >
               {loading ? (
@@ -74,9 +76,12 @@ export default function ForgotPasswordPage() {
               )}
             </button>
 
-            <button className="bg-slate-600 text-white rounded p-2 font-mono hover:bg-slate-700 transition cursor-pointer">
-              <Link href="../login">Back to Login</Link>
-            </button>
+            <Link
+              href="../login"
+              className="bg-slate-600 text-white text-center rounded p-2 font-mono hover:bg-slate-700 transition cursor-pointer"
+            >
+              Back to Login
+            </Link>
           </div>
         </form>
       </div>

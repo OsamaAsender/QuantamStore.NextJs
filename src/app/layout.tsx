@@ -33,12 +33,15 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          {/* <div className="bg-slate-100"> */}
-          <Navbar />
-          <Toaster position="top-right" reverseOrder={false} />
-          {children}
-          <Footer />
-          {/* </div> */}
+          <div className="flex flex-col min-h-screen bg-slate-100">
+            <Navbar />
+            <Toaster position="top-right" reverseOrder={false} />
+
+            {/* Main content fills remaining space */}
+            <main className="flex-grow">{children}</main>
+
+            <Footer />
+          </div>
         </AuthProvider>
       </body>
     </html>

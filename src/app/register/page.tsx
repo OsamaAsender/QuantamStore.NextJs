@@ -55,19 +55,20 @@ export default function Register() {
   };
 
   return (
-    <div className="w-screen h-screen fade-in">
-      <div className="w-130 mx-auto shadow mt-10 py-20 bg-white rounded">
-        <h1 className="text-center text-4xl font-bold font-mono mb-5">
+    <div className="w-full fade-in px-4 py-10">
+      <div className="max-w-md mx-auto bg-white p-6 sm:p-8 md:p-10 rounded shadow">
+        <h1 className="text-center text-3xl sm:text-4xl font-bold font-mono mb-6">
           Create an account
         </h1>
+<hr className="text-slate-100"/>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="w-100 p-10 mx-auto flex flex-col gap-4"
+          className="flex flex-col gap-4 mt-15"
         >
           <input
             type="email"
             {...register("email")}
-            className="form-control p-3 shadow rounded border border-gray-300 focus:border-teal-600 focus:outline-none focus:transition"
+            className="w-full p-3 shadow rounded border border-gray-300 focus:border-indigo-600 focus:outline-none font-mono"
             placeholder="Email"
           />
           {errors.email && (
@@ -77,25 +78,34 @@ export default function Register() {
           <input
             type="text"
             {...register("username")}
-            className="form-control p-3 shadow rounded border border-gray-300 focus:border-teal-600 focus:outline-none focus:transition"
+            className="w-full p-3 shadow rounded border border-gray-300 focus:border-indigo-600 focus:outline-none font-mono"
             placeholder="Username"
           />
           {errors.username && (
             <p className="text-red-500 text-sm">{errors.username.message}</p>
           )}
+
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               {...register("password")}
-              className="form-control p-3 shadow rounded border border-gray-300 focus:border-teal-600 focus:outline-none focus:transition w-full"
+              className="w-full p-3 shadow rounded border border-gray-300 focus:border-indigo-600 focus:outline-none font-mono"
               placeholder="Password"
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-3 top-3 text-sm text-gray-600 hover:text-teal-600 cursor-pointer transition"
+              className="absolute right-3 top-3 cursor-pointer transition"
             >
-              {showPassword ? "Hide" : "Show"}
+              <span
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                <img
+                  src={showPassword ? "/images/show.png" : "/images/hide.png"}
+                  alt=""
+                  className="w-5 h-5 text-center hover:scale-105 transition-transform"
+                />
+              </span>
             </button>
           </div>
           {errors.password && (
@@ -105,8 +115,8 @@ export default function Register() {
           <button
             type="submit"
             disabled={loading}
-            className={`bg-teal-600 text-white rounded p-2 font-mono transition cursor-pointer w-full ${
-              loading ? "opacity-50 cursor-not-allowed" : "hover:bg-teal-700"
+            className={`w-full bg-indigo-600 text-white rounded p-2 font-mono transition-colors duration-300 ease-in-out cursor-pointer ${
+              loading ? "opacity-50 cursor-not-allowed" : "hover:bg-indigo-700"
             }`}
           >
             {loading ? (
@@ -118,9 +128,9 @@ export default function Register() {
             )}
           </button>
 
-          <h5 className="font-mono font-bold">
+          <h5 className="text-sm sm:text-base font-mono font-bold text-center">
             Already have an Account?{" "}
-            <Link href="../login" className="hover:text-teal-600 transition">
+            <Link href="../login" className="hover:text-indigo-600 transition">
               Login
             </Link>
           </h5>

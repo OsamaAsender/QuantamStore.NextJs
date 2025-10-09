@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
@@ -71,30 +72,34 @@ export default function ResetPasswordPage() {
 
   return (
     <div className="w-screen h-screen fade-in">
-      <div className="w-130 mx-auto shadow mt-10 py-20 bg-white rounded">
+      <div className="max-w-md w-full mx-auto shadow mt-10 px-4 py-10 sm:px-6 md:px-10 bg-white rounded">
         <h1 className="text-center text-4xl font-bold font-mono mb-5">
           Reset Your Password
         </h1>
-        <form
-          onSubmit={handleSubmit}
-          className="w-100 p-10 mx-auto flex flex-col gap-4"
-        >
-          {/* New Password */}
+        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="form-control p-3 shadow rounded border border-gray-300 focus:border-teal-600 focus:outline-none focus:transition w-full"
+              className="form-control p-3 shadow rounded border border-gray-300 focus:border-indigo-600 focus:outline-none focus:transition w-full"
               placeholder="New password"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-3 top-3 text-sm text-gray-600 hover:text-teal-600 cursor-pointer transition"
+              className="absolute right-3 top-3 cursor-pointer transition"
             >
-              {showPassword ? "Hide" : "Show"}
+              <span
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                <img
+                  src={showPassword ? "/images/show.png" : "/images/hide.png"}
+                  alt=""
+                  className="w-5 h-5 hover:scale-105 transition-transform"
+                />
+              </span>
             </button>
           </div>
 
@@ -111,13 +116,12 @@ export default function ResetPasswordPage() {
             Strength: {strength}
           </p>
 
-          {/* Confirm Password */}
           <div className="relative">
             <input
               type={showConfirm ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="form-control p-3 shadow rounded border border-gray-300 focus:border-teal-600 focus:outline-none focus:transition w-full"
+              className="form-control p-3 shadow rounded border border-gray-300 focus:border-indigo-600 focus:outline-none focus:transition w-full"
               placeholder="Confirm password"
               required
             />
@@ -140,17 +144,25 @@ export default function ResetPasswordPage() {
             <button
               type="button"
               onClick={() => setShowConfirm((prev) => !prev)}
-              className="absolute right-3 top-3 text-sm text-gray-600 hover:text-teal-600 cursor-pointer transition"
+              className="absolute right-3 top-3 cursor-pointer transition"
             >
-              {showConfirm ? "Hide" : "Show"}
+              <span
+                aria-label={showConfirm ? "Hide password" : "Show password"}
+              >
+                <img
+                  src={showConfirm ? "/images/show.png" : "/images/hide.png"}
+                  alt=""
+                  className="w-5 h-5 hover:scale-105 transition-transform"
+                />
+              </span>
             </button>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className={`bg-teal-600 text-white rounded p-2 font-mono transition cursor-pointer w-full ${
-              loading ? "opacity-50 cursor-not-allowed" : "hover:bg-teal-700"
+            className={`bg-indigo-600 text-white rounded p-2 font-mono transition cursor-pointer w-full ${
+              loading ? "opacity-50 cursor-not-allowed" : "hover:bg-indigo-700"
             }`}
           >
             {loading ? (
@@ -161,6 +173,12 @@ export default function ResetPasswordPage() {
               "Reset Password"
             )}
           </button>
+          <Link
+            href="/login"
+            className="text-center text-indigo-600 hover:text-indigo-800 font-mono text-sm sm:text-base transition"
+          >
+            Cancel and return to Login
+          </Link>
         </form>
       </div>
     </div>
