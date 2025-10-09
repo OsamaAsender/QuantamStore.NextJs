@@ -171,7 +171,7 @@ export default function Navbar() {
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2 text-xl">
         <img
-          src="/images/monitor.png"
+          src="/images/quantamLogo.png"
           alt="Logo"
           className="w-8 h-8 object-contain"
         />

@@ -44,47 +44,124 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Features Section */}
-        <section className="px-6 py-16 bg-gray-50">
+        {/* Product Highlights Section */}
+        <section className="px-10 py-16 bg-gray-50">
           <h2 className="text-center text-2xl sm:text-3xl font-bold mb-10 text-indigo-700">
-            Why Choose Us
+            Featured Categories
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 text-center">
-            <div className="p-6 bg-white rounded shadow">
+            {/* Prebuilt PC */}
+            <div className="p-6 bg-white rounded shadow hover:shadow-lg transition">
               <Image
-                src="/images/atoms.png"
-                alt="Feature 1"
-                width={40}
-                height={40}
+                src="/images/prebuilt.jpeg"
+                className="mx-auto"
+                alt="Prebuilt PC"
+                width={260}
+                height={160}
               />
-              <h3 className="font-bold mt-4 mb-2">Innovative Products</h3>
-              <p className="text-sm text-gray-600">
-                We curate the latest tech and trends for forward-thinkers.
+              <h3 className="font-bold mt-4 mb-2">Prebuilt PCs</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                High-performance desktops ready to plug and play.
               </p>
+              <a
+                href="/store/prebuilt"
+                className="text-indigo-600 hover:underline text-sm font-mono"
+              >
+                Browse PCs →
+              </a>
             </div>
-            <div className="p-6 bg-white rounded shadow">
+
+            {/* Headsets */}
+            <div className="p-6 bg-white rounded shadow hover:shadow-lg transition">
               <Image
-                src="/images/excel.svg"
-                alt="Feature 2"
-                width={40}
-                height={40}
+                src="/images/headset.jpg"
+                className="mx-auto"
+                alt="Gaming Headset"
+                width={260}
+                height={160}
               />
-              <h3 className="font-bold mt-4 mb-2">Smart Shopping</h3>
-              <p className="text-sm text-gray-600">
-                Intuitive design and secure checkout for a smooth experience.
+              <h3 className="font-bold mt-4 mb-2">Gaming Headsets</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Immersive audio for competitive and casual play.
               </p>
+              <a
+                href="/store/headsets"
+                className="text-indigo-600 hover:underline text-sm font-mono"
+              >
+                Shop Headsets →
+              </a>
             </div>
-            <div className="p-6 bg-white rounded shadow">
+
+            {/* Monitors */}
+            <div className="p-6 bg-white rounded shadow hover:shadow-lg transition">
               <Image
-                src="/images/vertical.svg"
-                alt="Feature 3"
-                width={40}
-                height={40}
+                src="/images/monitor.jpeg"
+                className="mx-auto"
+                alt="Monitor"
+                width={260}
+                height={160}
               />
-              <h3 className="font-bold mt-4 mb-2">Responsive Support</h3>
-              <p className="text-sm text-gray-600">
-                We’re here when you need us — fast, friendly, and reliable.
+              <h3 className="font-bold mt-4 mb-2">Monitors</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Crisp visuals and fast refresh rates for every setup.
               </p>
+              <a
+                href="/store/monitors"
+                className="text-indigo-600 hover:underline text-sm font-mono"
+              >
+                View Monitors →
+              </a>
+            </div>
+
+            {/* Storage Devices */}
+            <div className="p-6 bg-white rounded shadow hover:shadow-lg transition">
+              <Image
+                src="/images/ssd.jpg"
+                className="mx-auto"
+                alt="Storage Devices"
+                width={260}
+                height={160}
+              />
+              <h3 className="font-bold mt-4 mb-2">Storage Devices</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                SSDs, HDDs, and NVMe drives for speed and capacity.
+              </p>
+              <a
+                href="/store/storage"
+                className="text-indigo-600 hover:underline text-sm font-mono"
+              >
+                Explore Storage →
+              </a>
+            </div>
+
+            {/* CPUs */}
+            <div className="p-6 bg-white rounded shadow hover:shadow-lg transition">
+              <Image src="/images/cpu.jpeg" alt="CPU" width={420} height={160} />
+              <h3 className="font-bold mt-4 mb-2">Processors</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Power your rig with the latest multi-core CPUs.
+              </p>
+              <a
+                href="/store/cpus"
+                className="text-indigo-600 hover:underline text-sm font-mono"
+              >
+                Browse CPUs →
+              </a>
+            </div>
+
+            {/* GPUs */}
+            <div className="p-6 bg-white rounded shadow hover:shadow-lg transition">
+              <Image src="/images/Gpu.jpeg" className="mx-auto" alt="GPU" width={400} height={160} />
+              <h3 className="font-bold mt-4 mb-2">Graphics Cards</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Stunning visuals and performance for gaming and creation.
+              </p>
+              <a
+                href="/store/gpus"
+                className="text-indigo-600 hover:underline text-sm font-mono"
+              >
+                Shop GPUs →
+              </a>
             </div>
           </div>
         </section>
