@@ -5,13 +5,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser, faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { toast } from "react-hot-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const pathname = usePathname();
 
   const handleLogout = async () => {
     try {
@@ -33,6 +36,22 @@ export default function Navbar() {
       toast.error(err.message || "Logout failed.");
     }
   };
+
+  useEffect(() => {
+    setProfileOpen(false); // Close dropdown on route change
+  }, [pathname]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const dropdown = document.getElementById("profile-dropdown");
+      if (dropdown && !dropdown.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+  
 
   return (
     <nav className="bg-white shadow font-mono px-4 py-3 flex items-center justify-between md:justify-around">
@@ -150,10 +169,7 @@ export default function Navbar() {
       </div>
 
       {/* Logo */}
-      <Link
-        href="/"
-        className="flex items-center gap-2 text-xl"
-      >
+      <Link href="/" className="flex items-center gap-2 text-xl">
         <img
           src="/images/monitor.png"
           alt="Logo"
@@ -186,22 +202,49 @@ export default function Navbar() {
       </ul>
 
       {/* Auth Links - Desktop */}
-      <ul className="hidden md:flex gap-2 items-center">
+      <ul className="hidden md:flex gap-5 items-center">
         {isAuthenticated ? (
           <>
-            <li className="flex items-center gap-2 hover:text-indigo-600 cursor-pointer transition">
-              <FontAwesomeIcon icon={faUser} />
-              {user?.username}
-            </li>
-            <li>
+            <div
+              className="relative group"
+              onClick={() => setProfileOpen((prev) => !prev)}
+            >
               <button
-                type="button"
-                onClick={handleLogout}
-                className="px-4 text-red-600 hover:text-red-800 cursor-pointer transition"
+                className="flex items-center gap-1 hover:text-indigo-600 transition"
+                aria-expanded={profileOpen}
+                aria-controls="profile-dropdown"
               >
-                Logout
+                <FontAwesomeIcon icon={faUser} />
+                {user?.username}
               </button>
-            </li>
+
+              <div
+                id="profile-dropdown"
+                className={`absolute top-full right-0 mt-2 bg-white shadow rounded text-sm font-mono z-50 min-w-[150px] transition-all duration-300
+      ${profileOpen ? "opacity-100 visible" : "opacity-0 invisible"}
+      group-hover:opacity-100 group-hover:visible
+    `}
+              >
+                <Link
+                  href="/profile"
+                  className="block px-4 py-2 hover:bg-gray-100 transition"
+                  onClick={() => setProfileOpen(false)}
+                >
+                  Profile
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setProfileOpen(false);
+                    handleLogout();
+                  }}
+                  className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 cursor-pointer transition"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+
             <li>
               <Link
                 href="/cart"
