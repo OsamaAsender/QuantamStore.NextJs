@@ -16,6 +16,7 @@ export default function Register() {
   const { login } = useAuth();
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -26,26 +27,32 @@ export default function Register() {
   });
 
   const onSubmit = async (data: RegisterFormData) => {
+    setLoading(true);
+
     try {
-     
       const res = await fetch("https://localhost:7227/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify(data),
       });
-  
+
       const result = await res.json();
       if (!res.ok) throw new Error(result.message || "Registration failed.");
- 
-      toast.success("Welcome, " + result.user.username + "!");
-      await login();
-      router.push("/");
+
+      setTimeout(async () => {
+        toast.success("Welcome, " + result.user.username + "!");
+        await login(); // updates auth context AFTER toast
+        router.push("/");
+        setLoading(false);
+      }, 500);
     } catch (err: any) {
-      toast.error(err.message || "Registration failed.");
+      setTimeout(() => {
+        toast.error(err.message || "Registration failed.");
+        setLoading(false);
+      }, 500);
     }
   };
-  
 
   return (
     <div className="w-screen h-screen fade-in">
@@ -97,10 +104,20 @@ export default function Register() {
 
           <button
             type="submit"
-            className="bg-teal-600 text-white rounded p-2 font-mono hover:bg-teal-700 transition cursor-pointer"
+            disabled={loading}
+            className={`bg-teal-600 text-white rounded p-2 font-mono transition cursor-pointer w-full ${
+              loading ? "opacity-50 cursor-not-allowed" : "hover:bg-teal-700"
+            }`}
           >
-            Register
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <span className="animate-spin rounded-full h-5 w-5 border-t-2 border-white"></span>
+              </div>
+            ) : (
+              "Register"
+            )}
           </button>
+
           <h5 className="font-mono font-bold">
             Already have an Account?{" "}
             <Link href="../login" className="hover:text-teal-600 transition">

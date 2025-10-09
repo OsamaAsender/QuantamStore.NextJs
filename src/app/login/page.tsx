@@ -11,10 +11,12 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+    setLoading(true);
+
     try {
       const res = await fetch("https://localhost:7227/api/auth/login", {
         method: "POST",
@@ -22,22 +24,27 @@ export default function Login() {
         credentials: "include",
         body: JSON.stringify({ email, password }),
       });
-  
+
       const data = await res.json();
-  
+
       if (!res.ok) {
-  
         throw new Error(data.message || "Login failed.");
       }
-  
-      await login(); // updates auth context
-      toast.success("Welcome back, " + data.user.username + "!");
-      router.push("/");
+
+      // Delay everything together
+      setTimeout(async () => {
+        toast.success("Welcome back, " + data.user.username + "!");
+        await login(); // updates auth context AFTER toast
+        router.push("/");
+        setLoading(false);
+      }, 500);
     } catch (err: any) {
-      toast.error(err.message || "Login failed.");
+      setTimeout(() => {
+        toast.error(err.message || "Login failed.");
+        setLoading(false);
+      }, 500);
     }
   };
-  
 
   return (
     <div className="w-screen h-screen fade-in">
@@ -73,10 +80,20 @@ export default function Login() {
 
           <button
             type="submit"
-            className="bg-teal-600 text-white rounded p-2 font-mono hover:bg-teal-700 transition cursor-pointer"
+            disabled={loading}
+            className={`bg-teal-600 text-white rounded p-2 font-mono transition cursor-pointer w-full ${
+              loading ? "opacity-50 cursor-not-allowed" : "hover:bg-teal-700"
+            }`}
           >
-            Login
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <span className="animate-spin rounded-full h-5 w-5 border-t-2 border-white"></span>
+              </div>
+            ) : (
+              "Login"
+            )}
           </button>
+
           <h5 className="font-mono font-bold">
             Don't have an Account?{" "}
             <span>
@@ -85,6 +102,17 @@ export default function Login() {
                 className="hover:text-teal-600 transition"
               >
                 Register
+              </Link>
+            </span>
+          </h5>
+          <h5 className="font-mono font-bold">
+            Forgot Password?
+            <span>
+              <Link
+                href="../forgot-password"
+                className=" ms-2 hover:text-teal-600 transition"
+              >
+                Reset
               </Link>
             </span>
           </h5>
