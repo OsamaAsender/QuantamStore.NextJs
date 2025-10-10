@@ -8,11 +8,14 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex font-sans bg-gray-100">
+    <div className="flex min-h-screen font-sans bg-gray-100">
+      {/* Sidebar stays fixed */}
       <AdminSidebar />
-      <div className="flex flex-col h-screen w-screen">
-        <AdminNavbar />
-        <main className="flex-grow p-6">{children}</main>
+
+      {/* Main content scrolls, including navbar */}
+      <div className="flex flex-col flex-1">
+  
+        <main className="flex-1 p-6">{children}</main>
       </div>
     </div>
   );

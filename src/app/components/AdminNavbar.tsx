@@ -9,7 +9,7 @@ export default function AdminNavbar() {
       <nav className="flex gap-10 text-sm font-medium text-gray-700">
         <div className="px-20">
           <Link href="/" className="hover:text-indigo-600 transition">
-            Return to Client Side →
+            To Client Side →
           </Link>
         </div>
       </nav>
