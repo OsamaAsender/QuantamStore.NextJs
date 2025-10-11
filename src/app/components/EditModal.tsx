@@ -4,20 +4,17 @@ import { useEffect, useMemo, useState } from "react";
 import { EditModalProps } from "../types/editModal";
 import { toast } from "react-hot-toast";
 import { fetchCamel } from "@/utils/fetchCamel";
+import { User } from "../types/user";
+import { useAuth } from "@/context/AuthContext";
 
-export default function EditModal<T extends Record<string, unknown>>({
-  itemId,
-  initialData,
-  fields,
-  endpoint,
-  onClose,
-  onSuccess,
-}: EditModalProps<T>) {
-  /* ---------- local state ---------- */
+export default function EditModal<T extends Record<string, unknown>>(
+  { itemId, initialData, fields, endpoint, onClose, onSuccess }: EditModalProps<T>
+) {
   const [loading, setLoading] = useState(!initialData);
-  const [initial, setInitial] = useState<T | null>(initialData);
-  const [data, setData] = useState<T | null>(initialData);
+  const [initial, setInitial] = useState<T | null>(initialData ?? null);
+  const [data, setData] = useState<T | null>(initialData ?? null);
   const [saving, setSaving] = useState(false);
+  const { refreshUser } = useAuth();
 
   /* ---------- fetch if we did not get initialData ---------- */
   useEffect(() => {
@@ -67,13 +64,27 @@ export default function EditModal<T extends Record<string, unknown>>({
         body: JSON.stringify(body),
       });
 
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.message || "Update failed");
+      /* ---------- after the PUT ---------- */
+      const updated = await res.json(); // Pascal-case from server
+      if (!res.ok) throw new Error(updated.message || "Update failed");
+
+      /* Pascal → camel (generic, works for any T) */
+      const camel = (k: string) =>
+        k.replace(/^([A-Z])/, (_, c) => c.toLowerCase());
+      const camelObj = Object.keys(updated).reduce<Record<string, unknown>>(
+        (acc, key) => {
+          acc[camel(key)] = updated[key];
+          return acc;
+        },
+        {}
+      ) as T;
+
+      /* single call – parent receives the updated object */
+      onSuccess?.(camelObj);
 
       setTimeout(() => {
         toast.success("Updated successfully");
-        onSuccess?.();
-        onClose();
+        onClose(); // <-- removed the duplicate onSuccess()
       }, 500);
     } catch (err: any) {
       setTimeout(() => toast.error(err.message || "Update failed"), 500);

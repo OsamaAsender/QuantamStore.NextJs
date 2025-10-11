@@ -16,6 +16,8 @@ import {
 import { useRouter } from "next/navigation";
 import BackButton from "../../../components/BackButton";
 import EditModal from "@/app/components/EditModal";
+import { useAuth } from "@/context/AuthContext";
+import { User} from "@/app/types/user";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<
@@ -25,7 +27,8 @@ export default function UsersPage() {
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState("");
   const router = useRouter();
-
+  const { refreshUser } = useAuth();
+  
   const [showModal, setShowModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
@@ -85,6 +88,21 @@ export default function UsersPage() {
       setTotal((prev) => prev - 1);
     });
   }
+
+  const handleEditSuccess = (fresh: User) => {
+  refreshUser(fresh); // navbar updates instantly
+  // re-fetch list so the table row also shows the new name
+  fetch(
+    `https://localhost:7227/api/users?page=${page}&pageSize=${pageSize}&search=${search}&role=${
+      role?.value || ""
+    }`
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      setUsers(data.users);
+      setTotal(data.total);
+    });
+};
 
   return (
     <div className="p-6 fade-in">
@@ -259,7 +277,7 @@ export default function UsersPage() {
       />
 
       {showEditModal && editUserId !== null && (
-        <EditModal
+        <EditModal<User>
           itemId={editUserId}
           endpoint="https://localhost:7227/api/users"
           fields={[
@@ -276,19 +294,7 @@ export default function UsersPage() {
             setShowEditModal(false);
             setEditUserId(null);
           }}
-          onSuccess={() => {
-            // Refresh users after edit
-            fetch(
-              `https://localhost:7227/api/users?page=${page}&pageSize=${pageSize}&search=${search}&role=${
-                role?.value || ""
-              }`
-            )
-              .then((res) => res.json())
-              .then((data) => {
-                setUsers(data.users);
-                setTotal(data.total);
-              });
-          }}
+         onSuccess={handleEditSuccess} 
         />
       )}
     </div>

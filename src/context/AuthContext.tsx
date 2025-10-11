@@ -7,6 +7,8 @@ type User = {
   username: string;
   email: string;
   role: string;
+  createdAt?: string;
+  [key: string]: unknown;
 };
 
 type AuthContextType = {
@@ -14,7 +16,7 @@ type AuthContextType = {
   isAuthenticated: boolean;
   login: () => Promise<void>;
   logout: () => Promise<void>;
-  refreshUser: (updated: Partial<User>) => void; // <-- NEW
+  refreshUser: (updated: Partial<User>) => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);

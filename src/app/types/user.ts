@@ -5,5 +5,6 @@ export interface User {
     email: string;
     role: string;
     createdAt: string;
+    [key: string]: unknown;
   }
   
