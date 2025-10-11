@@ -11,4 +11,5 @@ export const registerSchema = z.object({
     .regex(/(?=.*[A-Z])(?=.*\d)/, {
       message: "Must include an uppercase letter and a number",
     }),
+  role: z.enum(["Admin", "Customer"]).default("Customer"), // ✅ add this
 });

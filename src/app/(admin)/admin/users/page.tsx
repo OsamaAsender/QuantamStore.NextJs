@@ -5,6 +5,8 @@ import { Option } from "../../../types/filters";
 import SearchInput from "../../../components/SearchInput";
 import SoftDeleteModal from "../../../components/SoftDeleteModal";
 import Pagination from "../../../components/Pagination";
+import { registerSchema } from "@/schemas/registerSchema"; // reuse your existing Zod schema
+import CreateModal from "../../../components/CreateModal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEye,
@@ -17,7 +19,7 @@ import { useRouter } from "next/navigation";
 import BackButton from "../../../components/BackButton";
 import EditModal from "@/app/components/EditModal";
 import { useAuth } from "@/context/AuthContext";
-import { User} from "@/app/types/user";
+import { User } from "@/app/types/user";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<
@@ -28,7 +30,8 @@ export default function UsersPage() {
   const [search, setSearch] = useState("");
   const router = useRouter();
   const { refreshUser } = useAuth();
-  
+  const [showCreate, setShowCreate] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
@@ -90,19 +93,19 @@ export default function UsersPage() {
   }
 
   const handleEditSuccess = (fresh: User) => {
-  refreshUser(fresh); // navbar updates instantly
-  // re-fetch list so the table row also shows the new name
-  fetch(
-    `https://localhost:7227/api/users?page=${page}&pageSize=${pageSize}&search=${search}&role=${
-      role?.value || ""
-    }`
-  )
-    .then((res) => res.json())
-    .then((data) => {
-      setUsers(data.users);
-      setTotal(data.total);
-    });
-};
+    refreshUser(fresh); // navbar updates instantly
+    // re-fetch list so the table row also shows the new name
+    fetch(
+      `https://localhost:7227/api/users?page=${page}&pageSize=${pageSize}&search=${search}&role=${
+        role?.value || ""
+      }`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setUsers(data.users);
+        setTotal(data.total);
+      });
+  };
 
   return (
     <div className="p-6 fade-in">
@@ -177,12 +180,11 @@ export default function UsersPage() {
                 />
               </div>
 
-              {/* Insert New User Button */}
               <button
-                onClick={() => router.push("/admin/users/create")}
-                className="bg-indigo-600 text-white text-sm px-4 py-2 rounded hover:bg-indigo-700 transition w-full sm:w-auto"
+                onClick={() => setShowCreate(true)} // open modal
+                className="bg-green-600 text-white text-sm px-4 py-2 rounded hover:bg-green-700 cursor-pointer transition"
               >
-                + Insert
+                + Create
               </button>
             </div>
           </div>
@@ -294,7 +296,40 @@ export default function UsersPage() {
             setShowEditModal(false);
             setEditUserId(null);
           }}
-         onSuccess={handleEditSuccess} 
+          onSuccess={handleEditSuccess}
+        />
+      )}
+
+      {showCreate && (
+        <CreateModal
+          endpoint="/api/users"
+          schema={registerSchema}
+          fields={[
+            { name: "username", label: "Username", type: "text" },
+            { name: "email", label: "Email", type: "email" },
+            { name: "password", label: "Password", type: "password" },
+            {
+              name: "role",
+              label: "Role",
+              type: "select",
+              options: ["Admin", "Customer"],
+               default: "Customer",
+            },
+          ]}
+          onClose={() => setShowCreate(false)}
+          onSuccess={() => {
+            /* re-fetch list after creation */
+            fetch(
+              `https://localhost:7227/api/users?page=${page}&pageSize=${pageSize}&search=${search}&role=${
+                role?.value || ""
+              }`
+            )
+              .then((res) => res.json())
+              .then((data) => {
+                setUsers(data.users);
+                setTotal(data.total);
+              });
+          }}
         />
       )}
     </div>
