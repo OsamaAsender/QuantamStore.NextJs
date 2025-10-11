@@ -15,6 +15,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useRouter } from "next/navigation";
 import BackButton from "../../../components/BackButton";
+import EditModal from "@/app/components/EditModal";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<
@@ -46,6 +47,8 @@ export default function UsersPage() {
   );
   const pageSize = parseInt(pageSizeOption?.value || "10");
 
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editUserId, setEditUserId] = useState<number | null>(null);
   // Fetch users with debounce on search
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -194,13 +197,17 @@ export default function UsersPage() {
                     >
                       <FontAwesomeIcon icon={faEye} />
                     </a>
-                    <a
-                      href={`/admin/users/${user.id}/edit`}
-                      className="p-1 hover:bg-gray-300 rounded-full transition"
+                    <button
+                      onClick={() => {
+                        setEditUserId(user.id);
+                        setShowEditModal(true);
+                      }}
+                      className="p-1 hover:bg-gray-300 rounded-full cursor-pointer transition"
                       title="Edit User"
                     >
                       <FontAwesomeIcon icon={faEdit} />
-                    </a>
+                    </button>
+
                     <button
                       onClick={() => {
                         setSelectedUserId(user.id);
@@ -235,28 +242,55 @@ export default function UsersPage() {
           setShowModal(false);
           setSelectedUserId(null);
         }}
-        onConfirm={() => {
-          if (selectedUserId !== null) {
-            fetch(`https://localhost:7227/api/users/${selectedUserId}`, {
-              method: "DELETE",
-            }).then(() => {
-              setShowModal(false);
-              setSelectedUserId(null);
-              fetch(
-                `https://localhost:7227/api/users?page=${page}&pageSize=${pageSize}&search=${search}&role=${
-                  role?.value || ""
-                }&status=active`
-              )
-                .then((res) => res.json())
-                .then((data) => {
-                  setUsers(data.users);
-                  setTotal(data.total);
-                });
-            });
-          }
+        onConfirm={async () => {
+          if (!selectedUserId) return;
+          const res = await fetch(
+            `https://localhost:7227/api/users/${selectedUserId}`,
+            { method: "DELETE" }
+          );
+          if (!res.ok) throw new Error("Delete failed");
+
+          // optimistic UI update
+          setUsers((prev) => prev.filter((u) => u.id !== selectedUserId));
+          setTotal((prev) => prev - 1);
         }}
         entityName="user"
+        displayName={users.find((u) => u.id === selectedUserId)?.username ?? ""}
       />
+
+      {showEditModal && editUserId !== null && (
+        <EditModal
+          itemId={editUserId}
+          endpoint="https://localhost:7227/api/users"
+          fields={[
+            { name: "username", label: "Username", type: "text" },
+            { name: "email", label: "Email", type: "email" },
+            {
+              name: "role",
+              label: "Role",
+              type: "select",
+              options: ["Admin", "Customer"],
+            },
+          ]}
+          onClose={() => {
+            setShowEditModal(false);
+            setEditUserId(null);
+          }}
+          onSuccess={() => {
+            // Refresh users after edit
+            fetch(
+              `https://localhost:7227/api/users?page=${page}&pageSize=${pageSize}&search=${search}&role=${
+                role?.value || ""
+              }`
+            )
+              .then((res) => res.json())
+              .then((data) => {
+                setUsers(data.users);
+                setTotal(data.total);
+              });
+          }}
+        />
+      )}
     </div>
   );
 }
