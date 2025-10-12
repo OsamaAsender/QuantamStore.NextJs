@@ -20,6 +20,11 @@ import BackButton from "../../../components/BackButton";
 import EditModal from "@/app/components/EditModal";
 import { useAuth } from "@/context/AuthContext";
 import { User } from "@/app/types/user";
+import {
+  createUserSchema,
+  EditUserInput,
+  editUserSchema,
+} from "@/schemas/user";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<
@@ -83,18 +88,14 @@ export default function UsersPage() {
       });
   }, [page, pageSize]);
 
-  function handleDelete(id: number) {
-    fetch(`https://localhost:7227/api/users/${id}`, {
-      method: "DELETE",
-    }).then(() => {
-      setUsers((prev) => prev.filter((u) => u.id !== id));
-      setTotal((prev) => prev - 1);
-    });
-  }
+  const handleEditSuccess = async (updated: EditUserInput) => {
+    // Re-fetch the full user by ID after update
+    const res = await fetch(`https://localhost:7227/api/users/${editUserId}`);
+    const fresh: User = await res.json();
 
-  const handleEditSuccess = (fresh: User) => {
     refreshUser(fresh); // navbar updates instantly
-    // re-fetch list so the table row also shows the new name
+
+    // Re-fetch the full list to update the table
     fetch(
       `https://localhost:7227/api/users?page=${page}&pageSize=${pageSize}&search=${search}&role=${
         role?.value || ""
@@ -277,29 +278,30 @@ export default function UsersPage() {
         entityName="user"
         displayName={users.find((u) => u.id === selectedUserId)?.username ?? ""}
       />
-
-      {showEditModal && editUserId !== null && (
-        <EditModal<User>
-          itemId={editUserId}
-          endpoint="https://localhost:7227/api/users"
-          fields={[
-            { name: "username", label: "Username", type: "text" },
-            { name: "email", label: "Email", type: "email" },
-            {
-              name: "role",
-              label: "Role",
-              type: "select",
-              options: ["Admin", "Customer"],
-            },
-          ]}
-          onClose={() => {
-            setShowEditModal(false);
-            setEditUserId(null);
-          }}
-          onSuccess={handleEditSuccess}
-        />
+{showEditModal && editUserId !== null && (
+      <EditModal<EditUserInput>
+        itemId={String(editUserId)}
+        endpoint="https://localhost:7227/api/users"
+        schema={editUserSchema} // still fine — it validates only the editable fields
+        fields={[
+          { name: "username", label: "Username", type: "text" },
+          { name: "email", label: "Email", type: "email" },
+          {
+            name: "role",
+            label: "Role",
+            type: "select",
+            options: ["Admin", "Customer"],
+          },
+        ]}
+        onClose={() => {
+          setShowEditModal(false);
+          setEditUserId(null);
+        }}
+        onSuccess={handleEditSuccess}
+      />
       )}
 
+      
       {showCreate && (
         <CreateModal
           endpoint="/api/users"
@@ -313,7 +315,7 @@ export default function UsersPage() {
               label: "Role",
               type: "select",
               options: ["Admin", "Customer"],
-               default: "Customer",
+              default: "Customer",
             },
           ]}
           onClose={() => setShowCreate(false)}

@@ -1,13 +1,13 @@
+"use client";
+import { ZodSchema } from "zod";
+import { FieldConfig } from "./fieldConfig";
+
 export interface EditModalProps<T> {
-  itemId: number;
+  itemId: string;
   initialData?: T;
-  fields: Array<{
-    name: keyof T;
-    label: string;
-    type: "text" | "email" | "select";
-    options?: string[];
-  }>;
+  fields: FieldConfig<T>[];
   endpoint: string;
+  schema: ZodSchema<T>; 
   onClose: () => void;
-  onSuccess?: (updated: T) => void; // <-- accept the fresh object
+  onSuccess?: (updated: T) => void;
 }

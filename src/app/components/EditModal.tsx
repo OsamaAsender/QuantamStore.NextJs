@@ -2,58 +2,81 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { EditModalProps } from "../types/editModal";
+import {
+  useForm,
+  Path,
+  SubmitHandler,
+  useWatch,
+  DefaultValues,
+} from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-hot-toast";
 import { fetchCamel } from "@/utils/fetchCamel";
-import { User } from "../types/user";
 import { useAuth } from "@/context/AuthContext";
 
-export default function EditModal<T extends Record<string, unknown>>(
-  { itemId, initialData, fields, endpoint, onClose, onSuccess }: EditModalProps<T>
-) {
+export default function EditModal<T extends Record<string, unknown>>({
+  itemId,
+  initialData,
+  fields,
+  endpoint,
+  schema,
+  onClose,
+  onSuccess,
+}: EditModalProps<T>) {
   const [loading, setLoading] = useState(!initialData);
   const [initial, setInitial] = useState<T | null>(initialData ?? null);
-  const [data, setData] = useState<T | null>(initialData ?? null);
   const [saving, setSaving] = useState(false);
   const { refreshUser } = useAuth();
 
-  /* ---------- fetch if we did not get initialData ---------- */
+  const defaultValues: DefaultValues<T> = fields.reduce((acc, f) => {
+    const key = f.name as keyof DefaultValues<T>;
+    acc[key] = (f.default ??
+      (f.type === "select"
+        ? f.options?.[0] ?? ""
+        : "")) as DefaultValues<T>[typeof key];
+    return acc;
+  }, {} as DefaultValues<T>);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    control,
+  } = useForm<T>({
+    resolver: zodResolver(schema),
+    defaultValues: (initialData as DefaultValues<T>) ?? defaultValues,
+  });
+
+  // Fetch data if not passed in
   useEffect(() => {
-    if (initialData) return; // nothing to do
+    if (initialData) return;
     setLoading(true);
     fetchCamel<T>(`${endpoint}/${itemId}`)
       .then((json) => {
         setInitial(json);
-        setData(json);
+        reset(json);
       })
       .catch(() => toast.error("Could not load item"))
       .finally(() => setLoading(false));
-  }, [itemId, endpoint, initialData]);
+  }, [itemId, endpoint, initialData, reset]);
 
-  /* ---------- diff ---------- */
+  // Watch form changes
+  const watched = useWatch({ control });
   const changed = useMemo(() => {
-    if (!initial || !data) return false;
-    return JSON.stringify(initial) !== JSON.stringify(data);
-  }, [initial, data]);
+    if (!initial) return false;
+    return JSON.stringify(initial) !== JSON.stringify(watched);
+  }, [initial, watched]);
 
-  /* ---------- field change ---------- */
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) {
-    if (!data) return;
-    setData({ ...data, [e.target.name]: e.target.value });
-  }
-
-  /* ---------- submit ---------- */
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!data || !changed) return;
+  // Submit handler
+  const onSubmit: SubmitHandler<T> = async (formData) => {
+    if (!changed) return;
     setSaving(true);
 
-    // camel → Pascal for .NET DTO
     const pascal = (k: string) =>
       k.replace(/^([a-z])/, (_, c) => c.toUpperCase());
-    const body = Object.keys(data).reduce((acc, key) => {
-      acc[pascal(key)] = data[key];
+    const body = Object.keys(formData).reduce((acc, key) => {
+      acc[pascal(key)] = formData[key];
       return acc;
     }, {} as any);
 
@@ -64,11 +87,9 @@ export default function EditModal<T extends Record<string, unknown>>(
         body: JSON.stringify(body),
       });
 
-      /* ---------- after the PUT ---------- */
-      const updated = await res.json(); // Pascal-case from server
+      const updated = await res.json();
       if (!res.ok) throw new Error(updated.message || "Update failed");
 
-      /* Pascal → camel (generic, works for any T) */
       const camel = (k: string) =>
         k.replace(/^([A-Z])/, (_, c) => c.toLowerCase());
       const camelObj = Object.keys(updated).reduce<Record<string, unknown>>(
@@ -79,45 +100,33 @@ export default function EditModal<T extends Record<string, unknown>>(
         {}
       ) as T;
 
-      /* single call – parent receives the updated object */
       onSuccess?.(camelObj);
-
-      setTimeout(() => {
-        toast.success("Updated successfully");
-        onClose(); // <-- removed the duplicate onSuccess()
-      }, 500);
+      toast.success("Updated successfully");
+      onClose();
     } catch (err: any) {
-      setTimeout(() => toast.error(err.message || "Update failed"), 500);
+      toast.error(err.message || "Update failed");
     } finally {
       setSaving(false);
     }
-  }
+  };
 
-  /* ---------- render ---------- */
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 fade-in">
       <div className="bg-white p-6 rounded shadow max-w-md w-full">
         <h2 className="text-xl font-bold mb-4">Edit</h2>
 
-        {loading && <p>Loading…</p>}
+        {loading && <p className="text-sm text-gray-500">Loading…</p>}
 
-        {!loading && !data && (
-          <p className="text-red-600">Could not load item</p>
-        )}
-
-        {!loading && data && (
-          <form onSubmit={handleSubmit} className="space-y-4">
+        {!loading && initial && (
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             {fields.map((field) => (
               <div key={String(field.name)}>
                 <label className="block font-medium">{field.label}</label>
 
                 {field.type === "select" ? (
                   <select
-                    name={String(field.name)}
-                    value={(data as any)[field.name]}
-                    onChange={handleChange}
+                    {...register(field.name as Path<T>)}
                     className="w-full border p-2 rounded"
-                    required
                   >
                     {field.options?.map((opt) => (
                       <option key={opt} value={opt}>
@@ -125,20 +134,30 @@ export default function EditModal<T extends Record<string, unknown>>(
                       </option>
                     ))}
                   </select>
+                ) : field.type === "textarea" ? (
+                  <textarea
+                    {...register(field.name as Path<T>)}
+                    className="w-full border p-2 rounded"
+                    placeholder={field.label}
+                  />
                 ) : (
                   <input
                     type={field.type}
-                    name={String(field.name)}
-                    value={(data as any)[field.name]}
-                    onChange={handleChange}
+                    {...register(field.name as Path<T>)}
                     className="w-full border p-2 rounded"
-                    required
+                    placeholder={field.label}
                   />
+                )}
+
+                {errors[field.name as Path<T>] && (
+                  <p className="text-red-500 text-sm">
+                    {errors[field.name]?.message as string}
+                  </p>
                 )}
               </div>
             ))}
 
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-2 mt-4">
               <button
                 type="button"
                 onClick={onClose}
@@ -149,20 +168,16 @@ export default function EditModal<T extends Record<string, unknown>>(
               <button
                 type="submit"
                 disabled={!changed || saving}
-                className={`px-4 py-2 rounded  cursor-pointer transition text-white ${
+                className={`px-4 py-2 rounded text-white hover:cursor-pointer transition ${
                   changed && !saving
                     ? "bg-blue-600 hover:bg-blue-700"
                     : "bg-gray-300 cursor-not-allowed"
                 }`}
               >
                 {saving ? (
-                  <div className="flex items-center justify-center gap-2">
-                    <span className="animate-spin rounded-full h-4 w-4 border-t-2 border-white"></span>
-                    Saving…
-                  </div>
-                ) : (
-                  "Save"
-                )}
+                  <span className="animate-spin rounded-full h-4 w-4 border-t-2 border-white inline-block mr-2" />
+                ) : null}
+                {saving ? "Saving…" : "Save"}
               </button>
             </div>
           </form>
