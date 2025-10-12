@@ -15,6 +15,7 @@ import {
   editProductSchema,
   EditProductInput,
 } from "@/schemas/product";
+type CategoryOption = { value: string; label: string };
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -25,21 +26,37 @@ export default function ProductsPage() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editProductId, setEditProductId] = useState<number | null>(null);
   const [showModal, setShowModal] = useState(false);
-  const [categories, setCategories] = useState<
-    { value: string; label: string }[]
-  >([]);
+
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [selectedProductId, setSelectedProductId] = useState<number | null>(
     null
   );
+  const [categories, setCategories] = useState<CategoryOption[]>([]);
 
-  const categoryOptions = [
-    { value: "", label: "All Categories" },
-    { value: "Electronics", label: "Electronics" },
-    { value: "Books", label: "Books" },
-    { value: "Clothing", label: "Clothing" },
-  ];
-  const [category, setCategory] = useState(categoryOptions[0]);
+  const [category, setCategory] = useState<CategoryOption>({
+    value: "",
+    label: "All Categories",
+  });
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(
+          "https://localhost:7227/api/categories/dropdown"
+        );
+        const data = await res.json();
+
+        const options = [{ value: "", label: "All Categories" }, ...data];
+        setCategories(options);
+      } catch (err) {
+        console.error("Failed to fetch categories", err);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const pageSizeOptions = [
     { value: "10", label: "10" },
@@ -53,7 +70,7 @@ export default function ProductsPage() {
   const fetchProducts = async () => {
     const res = await fetch(
       `https://localhost:7227/api/products?page=${page}&pageSize=${pageSize}&search=${search}&categoryId=${
-        category?.value ?? ""
+        category?.value || ""
       }`
     );
     const data = await res.json();
@@ -88,7 +105,7 @@ export default function ProductsPage() {
             <h2 className="text-xl font-bold text-gray-700">Category Filter</h2>
             <SelectFilter
               label="Category"
-              options={categoryOptions}
+              options={categories}
               value={category}
               onChange={setCategory}
             />
