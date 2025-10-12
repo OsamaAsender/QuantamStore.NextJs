@@ -165,29 +165,23 @@ export default function UsersPage() {
           </div>
 
           {/* Action Section */}
-          <div className="flex flex-col gap-4">
-            <h2 className="text-xl font-bold text-gray-700 text-left">Pager</h2>
+          <div className="flex flex-col gap-4">            <h2 className="text-xl font-bold text-gray-700">Actions</h2>
 
-            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 w-full">
-              {/* Page Size Selector */}
-              <div className="flex flex-col sm:flex-row sm:items-center gap-2 w-full sm:w-auto">
-                <SelectFilter
-                  label="Show entries"
-                  options={pageSizeOptions}
-                  value={pageSizeOption}
-                  onChange={(selected) => {
-                    if (selected) setPageSizeOption(selected);
-                  }}
-                />
-              </div>
+            <SelectFilter
+              label="Show entries"
+              options={pageSizeOptions}
+              value={pageSizeOption}
+              onChange={(selected) => {
+                if (selected) setPageSizeOption(selected);
+              }}
+            />
 
-              <button
-                onClick={() => setShowCreate(true)} // open modal
-                className="bg-green-600 text-white text-sm px-4 py-2 rounded hover:bg-green-700 cursor-pointer transition"
-              >
-                + Create
-              </button>
-            </div>
+            <button
+              onClick={() => setShowCreate(true)} // open modal
+              className="bg-indigo-600 text-white text-sm px-4 py-2 rounded hover:bg-indigo-700 cursor-pointer transition"
+            >
+              + Create Product
+            </button>
           </div>
         </div>
         <hr className="text-slate-300" />
@@ -278,30 +272,29 @@ export default function UsersPage() {
         entityName="user"
         displayName={users.find((u) => u.id === selectedUserId)?.username ?? ""}
       />
-{showEditModal && editUserId !== null && (
-      <EditModal<EditUserInput>
-        itemId={String(editUserId)}
-        endpoint="https://localhost:7227/api/users"
-        schema={editUserSchema} // still fine — it validates only the editable fields
-        fields={[
-          { name: "username", label: "Username", type: "text" },
-          { name: "email", label: "Email", type: "email" },
-          {
-            name: "role",
-            label: "Role",
-            type: "select",
-            options: ["Admin", "Customer"],
-          },
-        ]}
-        onClose={() => {
-          setShowEditModal(false);
-          setEditUserId(null);
-        }}
-        onSuccess={handleEditSuccess}
-      />
+      {showEditModal && editUserId !== null && (
+        <EditModal<EditUserInput>
+          itemId={String(editUserId)}
+          endpoint="https://localhost:7227/api/users"
+          schema={editUserSchema} // still fine — it validates only the editable fields
+          fields={[
+            { name: "username", label: "Username", type: "text" },
+            { name: "email", label: "Email", type: "email" },
+            {
+              name: "role",
+              label: "Role",
+              type: "select",
+              options: ["Admin", "Customer"],
+            },
+          ]}
+          onClose={() => {
+            setShowEditModal(false);
+            setEditUserId(null);
+          }}
+          onSuccess={handleEditSuccess}
+        />
       )}
 
-      
       {showCreate && (
         <CreateModal
           endpoint="/api/users"

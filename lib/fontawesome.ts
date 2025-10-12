@@ -16,7 +16,8 @@ import {
   faGear,
   faArrowRightFromBracket,
   faAnglesLeft,
-  faAnglesRight 
+  faAnglesRight,
+  faPaperclip
 } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faUser, faCartShopping, faRightToBracket, faEye, faEdit, faTrash, faPlus, faMagnifyingGlass, faLayerGroup, faTruckFast, faShoppingCart, faGift, faGear, faArrowRightFromBracket, faAnglesLeft, faAnglesRight);
+library.add(faUser, faCartShopping, faRightToBracket, faEye, faEdit, faTrash, faPlus, faMagnifyingGlass, faLayerGroup, faTruckFast, faShoppingCart, faGift, faGear, faArrowRightFromBracket, faAnglesLeft, faAnglesRight,faPaperclip);
