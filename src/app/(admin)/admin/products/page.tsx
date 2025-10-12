@@ -137,8 +137,18 @@ export default function ProductsPage() {
                 <td className="p-3">{product.id}</td>
                 <td className="p-3">{product.name}</td>
                 <td className="p-3">${product.price.toFixed(2)}</td>
-                <td className="p-3">{product.category}</td>
-                <td className="p-3">{product.stock}</td>
+                <td className="p-3">{product.categoryName}</td>
+                <td className="p-3 hover:cursor-pointer">
+                  {product.imageUrl ? (
+                    <img
+                      src={product.imageUrl}
+                      alt={product.name}
+                      className="w-12 h-12 object-cover rounded"
+                    />
+                  ) : (
+                    <span className="text-gray-400">No image</span>
+                  )}
+                </td>
                 <td className="p-3 text-center space-x-4">
                   <button
                     onClick={() => {
