@@ -7,7 +7,7 @@ export type CreateModalProps<T extends FieldValues> = {
   fields: Array<{
     name: keyof T;
     label: string;
-    type: "text" | "email" | "password" | "select" | "textarea" | "file";
+    type: "text" | "email" | "password" | "select" | "textarea" | "file" | "number";
     options?: string[]; // for selects
      default?: T[keyof T];
   }>;

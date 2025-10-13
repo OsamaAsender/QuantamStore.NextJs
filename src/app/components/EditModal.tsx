@@ -139,7 +139,7 @@ export default function EditModal<T extends Record<string, unknown>>({
       setSaving(false);
     }
   };
-console.log("Initial data in EditModal:", initial);
+  console.log("Initial data in EditModal:", initial);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 fade-in">
@@ -157,13 +157,19 @@ console.log("Initial data in EditModal:", initial);
                 {field.type === "select" ? (
                   <select
                     {...register(field.name as Path<T>)}
-                    className="w-full border p-2 rounded"
+                    className="w-full border p-2 rounded hover:cursor-pointer focus:outline-0"
                   >
-                    {field.options?.map((opt) => (
-                      <option key={opt} value={opt}>
-                        {opt}
-                      </option>
-                    ))}
+                    {field.options?.map((opt) =>
+                      typeof opt === "object" ? (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ) : ( 
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      )
+                    )}
                   </select>
                 ) : field.type === "textarea" ? (
                   <textarea

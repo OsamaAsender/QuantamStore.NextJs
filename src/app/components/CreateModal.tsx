@@ -17,6 +17,11 @@ export default function CreateModal<T extends Record<string, unknown>>({
 }: CreateModalProps<T>) {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState<Record<string, any>>({});
+
+  const handleChange = (name: string, value: any) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const defaultValues: DefaultValues<T> = fields.reduce((acc, f) => {
     const key = f.name as keyof DefaultValues<T>;
@@ -57,7 +62,7 @@ export default function CreateModal<T extends Record<string, unknown>>({
         console.log(k, v);
       }
 
-      const res = await fetch(`https://localhost:7227${endpoint}`, {
+      const res = await fetch(`https://localhost:7227/${endpoint}`, {
         method: "POST",
         body: formData,
         credentials: "include",
@@ -96,15 +101,22 @@ export default function CreateModal<T extends Record<string, unknown>>({
 
                 {f.type === "select" && f.options ? (
                   <select
-                    {...register(fieldName)}
-                    className="w-full border p-2 rounded"
-                    defaultValue={f.options[0]}
+                    {...register(fieldName, { valueAsNumber: true })}
+                    className="p-1 border rounded hover:cursor-pointer"
+                    defaultValue={0}
                   >
-                    {f.options.map((opt) => (
-                      <option key={opt} value={opt}>
-                        {opt}
-                      </option>
-                    ))}
+                    <option value={0}>-- Select --</option>
+                    {f.options?.map((opt) =>
+                      typeof opt === "object" ? (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ) : (
+                        <option key={opt} value={opt}>
+                          {opt}
+                        </option>
+                      )
+                    )}
                   </select>
                 ) : f.type === "textarea" ? (
                   <textarea
@@ -158,9 +170,16 @@ export default function CreateModal<T extends Record<string, unknown>>({
                       />
                     )}
                   </>
+                ) : f.type === "number" ? (
+                  <input
+                    type="number"
+                    {...register(fieldName, { valueAsNumber: true })}
+                    className="w-full border p-2 rounded"
+                    placeholder={f.label}
+                  />
                 ) : (
                   <input
-                    type={f.type}
+                    type="text"
                     {...register(fieldName)}
                     className="w-full border p-2 rounded"
                     placeholder={f.label}

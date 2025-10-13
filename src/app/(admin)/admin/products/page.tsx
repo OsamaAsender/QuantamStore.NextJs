@@ -44,10 +44,15 @@ export default function ProductsPage() {
         const res = await fetch(
           "https://localhost:7227/api/categories/dropdown"
         );
-        const data = await res.json();
+        const data: { label: string; value: number | string }[] =
+          await res.json();
 
-        const options = [{ value: "", label: "All Categories" }, ...data];
-        setCategories(options);
+        const options = data.map((c) => ({
+          label: c.label,
+          value: typeof c.value === "string" ? parseInt(c.value) : c.value,
+        }));
+
+        setCategories([{ value: "", label: "All Categories" }, ...options]);
       } catch (err) {
         console.error("Failed to fetch categories", err);
       } finally {
@@ -233,8 +238,13 @@ export default function ProductsPage() {
             { name: "name", label: "Name", type: "text" },
             { name: "description", label: "Description", type: "textarea" },
             { name: "price", label: "Price", type: "number" },
-            { name: "category", label: "Category", type: "text" },
-            { name: "stock", label: "Stock", type: "number" },
+            {
+              name: "categoryId",
+              label: "Category",
+              type: "select",
+              options: categories,
+            },
+            { name: "stockQuantity", label: "Stock", type: "number" },
             { name: "image", label: "Product Image", type: "file" },
           ]}
           onClose={() => {
@@ -247,16 +257,21 @@ export default function ProductsPage() {
 
       {showCreate && (
         <CreateModal
-          endpoint="https://localhost:7227/api/products"
+          endpoint="api/products"
           schema={createProductSchema}
           fields={[
             { name: "name", label: "Name", type: "text" },
             { name: "description", label: "Description", type: "textarea" },
             { name: "price", label: "Price", type: "number" },
-            { name: "category", label: "Category", type: "text" },
+            {
+              name: "categoryId",
+              label: "Category",
+              type: "select",
+              options: categories,
+            },
             { name: "image", label: "Product Image", type: "file" },
             {
-              name: "stock",
+              name: "stockQuantity",
               label: "Stock",
               type: "number",
               default: 0,
@@ -265,7 +280,7 @@ export default function ProductsPage() {
           onClose={() => setShowCreate(false)}
           onSuccess={() => {
             fetch(
-              `https://localhost:7227/api/products?page=${page}&pageSize=${pageSize}&search=${search}&category=${category.value}`
+              `https://localhost:7227/api/products?page=${page}&pageSize=${pageSize}&search=${search}&categoryId=${category.value}`
             )
               .then((res) => res.json())
               .then((data) => {

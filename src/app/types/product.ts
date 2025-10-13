@@ -5,7 +5,7 @@ export type Product = {
   price: number;
   categoryId: number;
   categoryName:string;
-  stock: number;
+  stockQuantity: number;
   imageUrl:string;
   createdAt: string;
 };
