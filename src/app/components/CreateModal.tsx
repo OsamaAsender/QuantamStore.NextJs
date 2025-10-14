@@ -173,6 +173,7 @@ export default function CreateModal<T extends Record<string, unknown>>({
                 ) : f.type === "number" ? (
                   <input
                     type="number"
+                    step="0.01"
                     {...register(fieldName, { valueAsNumber: true })}
                     className="w-full border p-2 rounded"
                     placeholder={f.label}

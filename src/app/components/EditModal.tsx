@@ -139,7 +139,6 @@ export default function EditModal<T extends Record<string, unknown>>({
       setSaving(false);
     }
   };
-  console.log("Initial data in EditModal:", initial);
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 fade-in">
@@ -164,7 +163,7 @@ export default function EditModal<T extends Record<string, unknown>>({
                         <option key={opt.value} value={opt.value}>
                           {opt.label}
                         </option>
-                      ) : ( 
+                      ) : (
                         <option key={opt} value={opt}>
                           {opt}
                         </option>
@@ -226,6 +225,16 @@ export default function EditModal<T extends Record<string, unknown>>({
                         </div>
                       )}
                   </div>
+                ) : field.type === "number" ? (
+                  <input
+                    type="number"
+                    step={field.name === "price" ? "0.01" : "1"}
+                    {...register(field.name as Path<T>, {
+                      valueAsNumber: true,
+                    })}
+                    className="w-full border p-2 rounded"
+                    placeholder={field.label}
+                  />
                 ) : (
                   <input
                     type={field.type}

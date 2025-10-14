@@ -4,12 +4,12 @@ export async function fetchCamel<T>(url: string): Promise<T> {
   if (!res.ok) throw new Error(String(res.status));
   const payload = await res.json();
 
-  // quick & dirty camel-case converter (works for the flat user object)
-  const camel = (k: string) =>
-    k.replace(/([A-Z])/g, (_, c) => c.toLowerCase());
+  function toCamelCase(str: string) {
+    return str.replace(/^[A-Z]/, (c) => c.toLowerCase());
+  }
 
   return Object.keys(payload).reduce((acc, key) => {
-    acc[camel(key)] = payload[key];
+    acc[toCamelCase(key)] = payload[key];
     return acc;
   }, {} as any);
 }
