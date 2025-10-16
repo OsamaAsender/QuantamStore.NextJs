@@ -149,7 +149,7 @@ export default function ProductsPage() {
               <th className="p-3 text-left">Name</th>
               <th className="p-3 text-left">Price</th>
               <th className="p-3 text-left">Category</th>
-              <th className="p-3 text-left">Stock</th>
+              <th className="p-3 text-left">Image</th>
               <th className="p-3 text-center">Actions</th>
             </tr>
           </thead>
@@ -177,7 +177,7 @@ export default function ProductsPage() {
                       setEditProductId(product.id);
                       setShowEditModal(true);
                     }}
-                    className="p-1 hover:bg-gray-300 rounded-full transition"
+                    className="p-1 hover:bg-gray-300 rounded-full cursor-pointer transition"
                     title="Edit Product"
                   >
                     <FontAwesomeIcon icon={faEdit} />
@@ -187,7 +187,7 @@ export default function ProductsPage() {
                       setSelectedProductId(product.id);
                       setShowModal(true);
                     }}
-                    className="p-1 hover:text-red-600 hover:bg-red-300 rounded-full transition"
+                    className="p-1 hover:text-red-600 hover:bg-red-300 rounded-full cursor-pointer transition"
                     title="Delete Product"
                   >
                     <FontAwesomeIcon icon={faTrash} />
