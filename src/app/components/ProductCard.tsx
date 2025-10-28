@@ -2,41 +2,27 @@ import Link from "next/link";
 import { Product } from "@/types/Product";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
+import { useCartActions } from "@/hooks/useCartActions";
+import { toast } from "react-hot-toast"; // ✅ Add this
 
 export default function ProductCard({ product }: { product: Product }) {
   const { user, isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(false);
+  const { addToCart } = useCartActions();
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     if (!isAuthenticated || !user) {
-      alert("Please log in to add items to your cart.");
+      toast.error("Please log in to add items to your cart."); // ✅ Replace alert
       return;
     }
 
     setLoading(true);
     try {
-      const res = await fetch("https://localhost:7227/api/cart/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          productId: product.id,
-          quantity: 1,
-        }),
-      });
-
-      const text = await res.text(); // 👈 capture raw response
-      console.log("Response status:", res.status);
-      console.log("Response body:", text);
-
-      if (!res.ok) throw new Error(text);
-      alert("Product added to cart!");
+      await addToCart(product.id, 1);
     } catch (err) {
       console.error("Add to cart error:", err);
-      alert("Error adding product to cart.");
+      toast.error("Error adding product to cart."); // ✅ Replace alert
     } finally {
       setLoading(false);
     }
@@ -70,14 +56,22 @@ export default function ProductCard({ product }: { product: Product }) {
         <span className="text-primary font-bold mt-2 block">
           ${product.price}
         </span>
-        <hr />
-        <button
-          onClick={handleAddToCart}
-          disabled={loading || product.stockQuantity <= 0}
-          className="bg-indigo-500 text-white p-2 mt-2 rounded hover:bg-indigo-600 transition cursor-pointer"
-        >
-          {loading ? "Adding..." : "Add To Cart"}
-        </button>
+        <hr className="text-gray-300" />
+        <div className="space-x-3">
+          <button
+            onClick={handleAddToCart}
+            disabled={loading || product.stockQuantity <= 0}
+            className="bg-indigo-600 text-white p-2 mt-2 rounded hover:bg-indigo-700 transition cursor-pointer"
+          >
+            {loading ? "Adding..." : "Add To Cart"}
+          </button>
+          <Link
+            href={`/products/${product.id}`}
+            className="inline-block bg-gray-500 text-white p-2 rounded hover:bg-gray-600 transition"
+          >
+            Details
+          </Link>
+        </div>
       </div>
     </Link>
   );

@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { toast } from "react-hot-toast";
 import { useEffect, useState } from "react";
+import { useCart } from "@/context/CartContext";
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -15,6 +16,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const pathname = usePathname();
+  const { count } = useCart();
 
   const handleLogout = async () => {
     try {
@@ -131,14 +133,17 @@ export default function Navbar() {
                   Logout
                 </button>
               </li>
-              <li>
+              <li className="relative">
                 <Link
                   href="/cart"
                   className="hover:text-indigo-600 transition flex items-center gap-2"
-                  onClick={() => setIsOpen(false)}
                 >
                   <FontAwesomeIcon icon={faCartShopping} />
-                  Cart
+                  {count > 0 && (
+                    <span className="absolute -top-2 -right-3 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                      {count}
+                    </span>
+                  )}
                 </Link>
               </li>
             </>
@@ -251,13 +256,18 @@ export default function Navbar() {
               </div>
             </div>
 
-            <li>
-              <Link
-                href="/cart"
-                className="hover:text-indigo-600 transition flex items-center gap-2"
-              >
-                <FontAwesomeIcon icon={faCartShopping} />
-              </Link>
+            <li className="relative">
+               <Link
+                  href="/cart"
+                  className="hover:text-indigo-600 transition flex items-center gap-2"
+                >
+                  <FontAwesomeIcon icon={faCartShopping} />
+                  {count > 0 && (
+                    <span className="absolute -top-2 -right-3 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                      {count}
+                    </span>
+                  )}
+                </Link>
             </li>
           </>
         ) : (

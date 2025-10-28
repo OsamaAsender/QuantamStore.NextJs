@@ -6,6 +6,7 @@ import SelectFilter from "../components/SelectFilter";
 import SearchInput from "../components/SearchInput";
 import { handleAddToCart } from "@/utils/Cart";
 import Pagination from "../components/Pagination";
+import ProductCard from "../components/ProductCard";
 
 type CategoryOption = { value: string; label: string };
 
@@ -36,7 +37,7 @@ export default function StorePage() {
         );
         const data: { label: string; value: number | string }[] =
           await res.json();
-          console.log("Fetched categories:", data);
+        console.log("Fetched categories:", data);
         const options = data.map((c) => ({
           label: c.label,
           value: typeof c.value === "string" ? parseInt(c.value) : c.value,
@@ -120,32 +121,7 @@ export default function StorePage() {
           {/* Product Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {products.map((product) => (
-              <div
-                key={product.id}
-                className="shadow hover:shadow-lg transition rounded p-4 fade-in"
-              >
-                <img
-                  src={product.imageUrl || "/placeholder.png"}
-                  alt={product.name}
-                  className="w-full h-70 object-cover mb-2"
-                />
-                <h3 className="font-semibold">{product.name}</h3>
-                <p className="text-sm mt-1">Category: {product.categoryName}</p>
-                <div className="flex justify-between">
-                  <p className="font-bold mt-2">${product.price.toFixed(2)}</p>
-                  <div className="space-x-2">
-                    <button
-                      className="btn bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700 cursor-pointer transition"
-                      onClick={() => handleAddToCart(product.id)}
-                    >
-                      Add to Cart
-                    </button>
-                    <button className="btn bg-gray-500 text-white p-2 rounded hover:bg-gray-600 cursor-pointer transition">
-                      Details
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
 
