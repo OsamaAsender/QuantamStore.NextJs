@@ -263,7 +263,7 @@ export default function Navbar() {
                 >
                   <FontAwesomeIcon icon={faCartShopping} />
                   {count > 0 && (
-                    <span className="absolute -top-2 -right-3 bg-red-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                    <span className="absolute -top-4 -right-4 bg-gray-600 text-white text-xs font-mono fade-in px-1.5 rounded-full">
                       {count}
                     </span>
                   )}
