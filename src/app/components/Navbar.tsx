@@ -51,7 +51,6 @@ export default function Navbar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  
 
   return (
     <nav className="bg-white shadow font-mono px-4 py-3 flex items-center justify-between md:justify-around">
@@ -144,7 +143,7 @@ export default function Navbar() {
               </li>
             </>
           ) : (
-            <>
+            <u>
               <li>
                 <Link
                   href="/login"
@@ -163,7 +162,7 @@ export default function Navbar() {
                   Register
                 </Link>
               </li>
-            </>
+            </u>
           )}
         </ul>
       </div>
@@ -178,7 +177,7 @@ export default function Navbar() {
         Quantam
       </Link>
       {/* Desktop Links */}
-      <ul className="hidden md:flex gap-7 items-center">
+      <ul className="hidden md:flex gap-7 items-center text-gray-500">
         <li>
           <Link href="/" className="hover:text-indigo-600 transition">
             Home
@@ -202,7 +201,7 @@ export default function Navbar() {
       </ul>
 
       {/* Auth Links - Desktop */}
-      <ul className="hidden md:flex gap-5 items-center">
+      <ul className="hidden md:flex gap-5 items-center text-gray-500">
         {isAuthenticated ? (
           <>
             <div
@@ -245,7 +244,7 @@ export default function Navbar() {
                     setProfileOpen(false);
                     handleLogout();
                   }}
-                  className="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 cursor-pointer transition"
+                  className="block w-full rounded text-left px-4 py-2 text-red-600 hover:bg-gray-100 cursor-pointer transition"
                 >
                   Logout
                 </button>
@@ -258,7 +257,6 @@ export default function Navbar() {
                 className="hover:text-indigo-600 transition flex items-center gap-2"
               >
                 <FontAwesomeIcon icon={faCartShopping} />
-                Cart
               </Link>
             </li>
           </>

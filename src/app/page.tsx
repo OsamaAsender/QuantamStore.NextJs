@@ -1,48 +1,54 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
+import Pagination from "./components/Pagination";
+import { Autoplay } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col font-sans fade-in">
-      <div className="container-fluid mx-auto mt-15 rounded">
-        {/* Hero Section */}
-        <section className="flex flex-col-reverse md:flex-row items-center justify-around px-16 py-16 gap-10 bg-white">
-          {/* Text Content */}
-          <div className="flex-1 text-center md:text-left">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-600 to-purple-500 bg-clip-text text-transparent mb-4">
-              Welcome to QuantamStore
-            </h1>
-            <p className="text-gray-700 text-base sm:text-lg mb-6">
-              Discover cutting-edge products, seamless shopping, and a smarter
-              experience.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-              <a
-                href="/store"
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded font-mono transition"
-              >
-                Explore Store
-              </a>
-              <a
-                href="/about"
-                className="border border-indigo-600 text-indigo-600 hover:bg-indigo-50 px-6 py-2 rounded font-mono transition"
-              >
-                Learn More
-              </a>
-            </div>
+      <div className="container-fluid mx-auto rounded">
+        <section className="relative w-full h-[600px] overflow-hidden">
+          {/* Background Carousel */}
+          <div className="absolute inset-0 z-0">
+            <Swiper
+              modules={[Autoplay]}
+              autoplay={{ delay: 5000 }}
+              pagination={{clickable:true}}
+              loop
+              slidesPerView={1}
+              className="w-full h-full"
+            >
+              <SwiperSlide>
+                <Image
+                  src="/images/Cover1.jpeg"
+                  alt="Hero Slide 1"
+                  fill
+                  className="object-cover"
+                />
+              </SwiperSlide>
+              <SwiperSlide>
+                <Image
+                  src="/images/Cover2.jpeg"
+                  alt="Hero Slide 2"
+                  fill
+                  className="object-cover"
+                />
+              </SwiperSlide>
+              <SwiperSlide>
+                <Image
+                  src="/images/Cover3.jpeg"
+                  alt="Hero Slide 3"
+                  fill
+                  className="object-cover"
+                />
+              </SwiperSlide>
+            </Swiper>
+            {/* Optional dark overlay for contrast */}
+            <div className="absolute inset-0 bg-black/40 z-[1]" />
           </div>
 
-          {/* Hero Image */}
-          <div className="flex-1 flex justify-center">
-            <Image
-              src="/images/quantamLogo.png"
-              alt="Hero graphic"
-              width={300}
-              height={300}
-              className="object-contain"
-              priority
-            />
-          </div>
         </section>
 
         {/* Product Highlights Section */}
