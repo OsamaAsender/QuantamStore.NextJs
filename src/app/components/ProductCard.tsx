@@ -30,11 +30,11 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <Link href={`/products/${product.id}`}>
-      <div className="rounded-lg p-4 shadow hover:shadow-md transition cursor-pointer bg-white">
+      <div className="rounded-lg p-4 bg-slate shadow hover:shadow-md transition cursor-pointer bg-white h-[650px] flex flex-col justify-between">
         <img
           src={product.imageUrl}
           alt={product.name}
-          className="w-full h-70 object-cover rounded"
+          className="w-full h-70 object-contain rounded shadow"
         />
         <h3 className="mt-2 text-lg font-semibold">{product.name}</h3>
         <div className="mt-2 text-sm text-gray-500">
@@ -56,21 +56,14 @@ export default function ProductCard({ product }: { product: Product }) {
         <span className="text-primary font-bold mt-2 block">
           ${product.price}
         </span>
-        <hr className="text-gray-300" />
         <div className="space-x-3">
           <button
             onClick={handleAddToCart}
             disabled={loading || product.stockQuantity <= 0}
-            className="bg-indigo-600 text-white p-2 mt-2 rounded hover:bg-indigo-700 transition cursor-pointer"
+            className="bg-indigo-600 w-full text-white p-2 mt-2 rounded hover:bg-indigo-700 transition cursor-pointer"
           >
             {loading ? "Adding..." : "Add To Cart"}
           </button>
-          <Link
-            href={`/products/${product.id}`}
-            className="inline-block bg-gray-500 text-white p-2 rounded hover:bg-gray-600 transition"
-          >
-            Details
-          </Link>
         </div>
       </div>
     </Link>
