@@ -271,7 +271,7 @@ export default function Navbar() {
             </li>
           </>
         ) : (
-          <>
+          <ul className="flex space-x-2">
             <li>
               <Link href="/login" className="hover:text-indigo-600 transition">
                 Login
@@ -286,7 +286,7 @@ export default function Navbar() {
                 Register
               </Link>
             </li>
-          </>
+          </ul>
         )}
       </ul>
 

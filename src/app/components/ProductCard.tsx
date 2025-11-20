@@ -29,7 +29,7 @@ export default function ProductCard({ product }: { product: Product }) {
   };
 
   return (
-    <Link href={`/products/${product.id}`}>
+    <Link href={`/product/${product.id}`}>
       <div className=" fade-in rounded-lg p-4 bg-slate shadow hover:shadow-md transition cursor-pointer bg-white h-[650px] flex flex-col justify-between">
         <img
           src={product.imageUrl}

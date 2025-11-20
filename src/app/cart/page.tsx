@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useCartActions } from "@/hooks/useCartActions";
+import Link from "next/link";
+import Breadcrumb from "../components/BreadCrumb";
 
 type Product = {
   name: string;
@@ -50,96 +52,173 @@ export default function CartPage() {
     } catch {}
   };
 
-  const checkoutHandler = async () => {
-    setLoading(true);
-    try {
-      await checkout();
-      setItems([]);
-    } catch {} finally {
-      setLoading(false);
-    }
-  };
-
   return (
-    <div className="container mx-auto p-6 fade-in">
-      <h1 className="text-2xl font-bold mb-6">Your Cart</h1>
+    <div className="container mx-auto max-w-6xl my-10 px-4 fade-in">
+      <Breadcrumb current="Cart" />
 
       {items.length === 0 ? (
-        <div className="text-center py-20 fade-in">
+        <div className="text-center py-20">
           <FontAwesomeIcon
             icon={faTrash}
-            className="text-gray-400 bg-white p-3 rounded-full text-4xl mb-4"
+            className="text-gray-400 p-3 rounded-full text-4xl mb-4"
           />
           <h2 className="text-2xl font-bold mb-2">Your cart is empty</h2>
           <p className="text-gray-500 mb-6">
-            Looks like you haven’t added anything to your cart yet.
+            Looks like you haven’t added anything yet.
           </p>
-          <a
+          <Link
             href="/store"
-            className="inline-block bg-indigo-600 text-white px-6 py-3 rounded hover:bg-indigo-700 transition"
+            className="inline-block bg-indigo-600 text-white px-6 py-3 rounded hover:bg-indigo-700 transition font-mono"
           >
             Start Shopping
-          </a>
+          </Link>
         </div>
       ) : (
-        <>
-          <div className="grid gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] gap-10">
+          {/* 🛍️ Cart Items */}
+          <div>
+            <h1 className="text-2xl font-bold text-gray-700 font-mono mb-6">
+              Shopping Cart
+              <FontAwesomeIcon
+                icon={faCartShopping}
+                className="ml-3 text-indigo-600"
+              />
+            </h1>
             {items.map((item) => (
               <div
                 key={item.id}
-                className="flex items-center gap-4 border p-4 rounded shadow"
+                className="grid grid-cols-[80px_1fr_100px_180px_40px] items-center bg-white my-4 p-4 rounded shadow gap-4"
               >
                 <img
                   src={item.product.imageUrl || "/placeholder.png"}
                   alt={item.product.name}
-                  className="w-20 h-20 object-cover rounded"
+                  className="w-20 h-20 object-contain rounded"
                 />
-                <div className="flex-1">
+                <div>
                   <h3 className="font-semibold">{item.product.name}</h3>
+                </div>
+                <div>
                   <p className="text-sm text-gray-600">
                     ${item.product.price.toFixed(2)}
                   </p>
-                  <div className="flex items-center gap-2 mt-2">
-                    <button
-                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      disabled={item.quantity <= 1}
-                      className="px-2 py-1 bg-gray-200 rounded"
-                    >
-                      −
-                    </button>
-                    <span>{item.quantity}</span>
-                    <button
-                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      disabled={item.quantity >= item.product.stockQuantity}
-                      className="px-2 py-1 bg-gray-200 rounded"
-                    >
-                      +
-                    </button>
-                  </div>
                 </div>
-                <button
-                  onClick={() => removeItemHandler(item.id)}
-                  className="text-red-500 hover:underline"
-                >
-                  Remove
-                </button>
+                <div className="grid grid-cols-[40px_40px_40px_1fr] items-center gap-2">
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    disabled={item.quantity <= 1}
+                    className={`p-1 rounded text-center ${
+                      item.quantity <= 1
+                        ? "bg-gray-200 cursor-not-allowed"
+                        : "bg-gray-200 hover:bg-gray-300 cursor-pointer"
+                    }`}
+                  >
+                    −
+                  </button>
+                  <span className="text-center font-medium">
+                    {item.quantity}
+                  </span>
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    disabled={item.quantity >= item.product.stockQuantity}
+                    className="p-1 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer transition text-center"
+                  >
+                    +
+                  </button>
+                  <button
+                    onClick={() => removeItemHandler(item.id)}
+                    className="text-red-500 text-sm justify-self-end hover:bg-gray-200 p-1 rounded-full transition cursor-pointer"
+                  >
+                    <FontAwesomeIcon icon={faTrash} />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
 
-          <div className="flex justify-between items-center mt-6">
-            <p className="text-lg font-bold">Total: ${total.toFixed(2)}</p>
-            <button
-              onClick={checkoutHandler}
-              disabled={loading}
-              className={`btn bg-green-600 text-white p-2 rounded hover:bg-green-700 transition ${
-                loading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
-            >
-              {loading ? "Processing..." : "Checkout Now"}
-            </button>
+          {/* 📦 Summary Sidebar */}
+          <div className="flex flex-col gap-6 bg-gray-50 p-6 rounded shadow-sm font-mono text-sm h-fit">
+            {/* 💰 Order Summary */}
+            <section className="space-y-2">
+              <h2 className="text-base font-semibold text-gray-700 mb-2">
+                Order Summary
+              </h2>
+              <div className="flex justify-between">
+                <span>Subtotal:</span>
+                <span>${total.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Shipping:</span>
+                <span>-</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Tax:</span>
+                <span>-</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Discount:</span>
+                <span>-</span>
+              </div>
+              <hr className="my-2" />
+              <div className="flex justify-between font-bold text-lg">
+                <span>Total:</span>
+                <span>${total.toFixed(2)}</span>
+              </div>
+            </section>
+
+            {/* ✉️ Note */}
+            <section>
+              <label
+                htmlFor="note"
+                className="block font-semibold text-gray-700 mb-2"
+              >
+                Additional Comments
+              </label>
+              <textarea
+                id="note"
+                rows={3}
+                placeholder="Leave a note..."
+                className="w-full p-2 border border-gray-300 rounded resize-none focus:outline-none focus:border-indigo-600"
+              />
+            </section>
+
+            {/* 🎟️ Voucher */}
+            <section>
+              <label
+                htmlFor="voucher"
+                className="block font-semibold text-gray-700 mb-2"
+              >
+                Voucher
+              </label>
+              <div className="flex gap-2">
+                <input
+                  id="voucher"
+                  type="text"
+                  placeholder="Enter code"
+                  className="flex-grow p-2 border border-gray-300 rounded focus:outline-none focus:border-indigo-600"
+                />
+                <button
+                  type="button"
+                  className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
+                >
+                  Apply
+                </button>
+              </div>
+            </section>
+
+            {/* ✅ Actions */}
+            <section className="flex flex-col gap-3">
+              <Link
+                href="/checkout/details"
+                onClick={() =>
+                  localStorage.setItem("subtotal", total.toString())
+                }
+                className="w-full bg-indigo-600 text-white p-2 rounded transition text-center hover:bg-indigo-700"
+              >
+                Checkout
+              </Link>
+            </section>
           </div>
-        </>
+        </div>
       )}
     </div>
   );

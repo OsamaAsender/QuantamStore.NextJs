@@ -15,7 +15,7 @@ export default function Home() {
             <Swiper
               modules={[Autoplay]}
               autoplay={{ delay: 5000 }}
-              pagination={{clickable:true}}
+              pagination={{ clickable: true }}
               loop
               slidesPerView={1}
               className="w-full h-full"
@@ -48,7 +48,6 @@ export default function Home() {
             {/* Optional dark overlay for contrast */}
             <div className="absolute inset-0 bg-black/40 z-[1]" />
           </div>
-
         </section>
 
         {/* Product Highlights Section */}
@@ -58,7 +57,10 @@ export default function Home() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 text-center">
             {/* Prebuilt PCS */}
-            <Link href="/store/prebuilt" className="group">
+            <Link
+              href={{ pathname: "/store", query: { category: "prebuilt" } }}
+              className="group"
+            >
               <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
                 <Image
                   src="/images/prebuilt.jpeg"
@@ -80,7 +82,10 @@ export default function Home() {
             </Link>
 
             {/* Headsets */}
-            <Link href="/store/headsets" className="group">
+            <Link
+              href={{ pathname: "/store", query: { category: "headsets" } }}
+              className="group"
+            >
               <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
                 <Image
                   src="/images/headset.jpg"
@@ -102,7 +107,10 @@ export default function Home() {
             </Link>
 
             {/* Monitors */}
-            <Link href="/store/monitors" className="group">
+            <Link
+              href={{ pathname: "/store", query: { category: "monitors" } }}
+              className="group"
+            >
               <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
                 <Image
                   src="/images/monitor.jpeg"
@@ -124,7 +132,10 @@ export default function Home() {
             </Link>
 
             {/* Storage Devices */}
-            <Link href="/store/storage" className="group">
+            <Link
+              href={{ pathname: "/store", query: { category: "storage" } }}
+              className="group"
+            >
               <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
                 <Image
                   src="/images/ssd.jpg"
@@ -146,7 +157,10 @@ export default function Home() {
             </Link>
 
             {/* CPUs */}
-            <Link href="/store/cpus" className="group">
+            <Link
+              href={{ pathname: "/store", query: { category: "cpus" } }}
+              className="group"
+            >
               <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
                 <Image
                   src="/images/cpu.jpeg"
@@ -168,7 +182,10 @@ export default function Home() {
             </Link>
 
             {/* GPUs */}
-            <Link href="/store/gpus" className="group">
+            <Link
+              href={{ pathname: "/store", query: { category: "gpus" } }}
+              className="group"
+            >
               <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
                 <Image
                   src="/images/Gpu.jpeg"

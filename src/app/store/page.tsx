@@ -7,6 +7,7 @@ import SearchInput from "../components/SearchInput";
 import { handleAddToCart } from "@/utils/Cart";
 import Pagination from "../components/Pagination";
 import ProductCard from "../components/ProductCard";
+import { useSearchParams } from "next/navigation";
 
 type CategoryOption = { value: string; label: string };
 
@@ -29,28 +30,41 @@ export default function StorePage() {
   const [pageSizeOption, setPageSizeOption] = useState(pageSizeOptions[0]);
   const pageSize = parseInt(pageSizeOption.value);
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch(
-          "https://localhost:7227/api/categories/dropdown"
+  const searchParams = useSearchParams();
+  const initialCategorySlug = searchParams.get("category");
+
+ useEffect(() => {
+  
+
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch("https://localhost:7227/api/categories/dropdown");
+      const data: { label: string; value: number | string }[] = await res.json();
+
+      const options = data.map((c) => ({
+        label: c.label,
+        value: typeof c.value === "string" ? parseInt(c.value) : c.value,
+      }));
+
+      const allOptions = [{ value: "", label: "All Categories" }, ...options];
+      setCategories(allOptions);
+
+      // Match query param to category label
+      if (initialCategorySlug) {
+        const matched = allOptions.find((opt) =>
+          opt.label.toLowerCase().includes(initialCategorySlug.toLowerCase())
         );
-        const data: { label: string; value: number | string }[] =
-          await res.json();
-        console.log("Fetched categories:", data);
-        const options = data.map((c) => ({
-          label: c.label,
-          value: typeof c.value === "string" ? parseInt(c.value) : c.value,
-        }));
-
-        setCategories([{ value: "", label: "All Categories" }, ...options]);
-      } catch (err) {
-        console.error("Failed to fetch categories", err);
+        if (matched) {
+          setCategory(matched);
+        }
       }
-    };
+    } catch (err) {
+      console.error("Failed to fetch categories", err);
+    }
+  };
 
-    fetchCategories();
-  }, []);
+  fetchCategories();
+}, []);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
