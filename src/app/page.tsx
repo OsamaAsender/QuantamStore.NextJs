@@ -4,52 +4,50 @@ import Link from "next/link";
 import Pagination from "./components/Pagination";
 import { Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
+import ProductCarousel from "./components/Carousel";
+import { useState, useEffect } from "react";
+import TailwindCarousel from "./components/TailwindCarousel";
 
 export default function Home() {
+  const slides = [
+    {
+      id: 1,
+      title: "50% Off Your First Shopping",
+      text: "Get Free Shipping on all orders over $99.00",
+      image: "/earbuds.png",
+      button: "Shop Now",
+    },
+    {
+      id: 2,
+      title: "Upgrade Your Setup",
+      text: "Save 30% on gaming monitors and accessories",
+      image: "/monitor.png",
+      button: "Explore Deals",
+    },
+    {
+      id: 3,
+      title: "New Arrivals Just Dropped",
+      text: "Discover the latest fashion and tech",
+      image: "/sweater.png",
+      button: "Browse Now",
+    },
+  ];
+
+  const [active, setActive] = useState(0);
+
+  // Autoplay every 4 seconds
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setActive((prev) => (prev + 1) % slides.length);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col font-sans fade-in">
       <div className="container-fluid mx-auto rounded">
-        <section className="relative w-full h-[600px] overflow-hidden">
-          {/* Background Carousel */}
-          <div className="absolute inset-0 z-0">
-            <Swiper
-              modules={[Autoplay]}
-              autoplay={{ delay: 5000 }}
-              pagination={{ clickable: true }}
-              loop
-              slidesPerView={1}
-              className="w-full h-full"
-            >
-              <SwiperSlide>
-                <Image
-                  src="/images/Cover1.jpeg"
-                  alt="Hero Slide 1"
-                  fill
-                  className="object-cover"
-                />
-              </SwiperSlide>
-              <SwiperSlide>
-                <Image
-                  src="/images/Cover2.jpeg"
-                  alt="Hero Slide 2"
-                  fill
-                  className="object-cover"
-                />
-              </SwiperSlide>
-              <SwiperSlide>
-                <Image
-                  src="/images/Cover3.jpeg"
-                  alt="Hero Slide 3"
-                  fill
-                  className="object-cover"
-                />
-              </SwiperSlide>
-            </Swiper>
-            {/* Optional dark overlay for contrast */}
-            <div className="absolute inset-0 bg-black/40 z-[1]" />
-          </div>
-        </section>
-
+        {/* 🎯 Tailwind Carousel */}
+        <TailwindCarousel />
         {/* Product Highlights Section */}
         <section className="px-10 py-16 bg-gray-50">
           <h2 className="text-center text-2xl sm:text-3xl font-bold mb-10 text-indigo-700">
