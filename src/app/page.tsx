@@ -53,8 +53,9 @@ export default function Home() {
           <h2 className="text-center text-2xl sm:text-3xl font-bold mb-10 text-indigo-700">
             Featured Categories
           </h2>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 text-center">
-            {/* Prebuilt PCS */}
+            {/* Prebuilt PCs */}
             <Link
               href={{ pathname: "/store", query: { category: "prebuilt" } }}
               className="group"
@@ -62,10 +63,10 @@ export default function Home() {
               <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
                 <Image
                   src="/images/prebuilt.jpeg"
-                  className="mx-auto"
                   alt="Prebuilt PC"
                   width={300}
                   height={300}
+                  className="mx-auto transform transition-transform duration-300 group-hover:scale-105"
                 />
                 <h3 className="font-bold mt-4 mb-2 group-hover:text-indigo-600 transition">
                   Prebuilt PCs
@@ -79,7 +80,7 @@ export default function Home() {
               </div>
             </Link>
 
-            {/* Headsets */}
+            {/* Gaming Headsets */}
             <Link
               href={{ pathname: "/store", query: { category: "headsets" } }}
               className="group"
@@ -87,10 +88,10 @@ export default function Home() {
               <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
                 <Image
                   src="/images/headset.jpg"
-                  className="mx-auto"
                   alt="Gaming Headset"
                   width={300}
                   height={150}
+                  className="mx-auto transform transition-transform duration-300 group-hover:scale-105"
                 />
                 <h3 className="font-bold mt-4 mb-2 group-hover:text-indigo-600 transition">
                   Gaming Headsets
@@ -112,10 +113,10 @@ export default function Home() {
               <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
                 <Image
                   src="/images/monitor.jpeg"
-                  className="mx-auto"
                   alt="Monitor"
                   width={300}
                   height={150}
+                  className="mx-auto transform transition-transform duration-300 group-hover:scale-105"
                 />
                 <h3 className="font-bold mt-4 mb-2 group-hover:text-indigo-600 transition">
                   Monitors
@@ -137,10 +138,10 @@ export default function Home() {
               <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
                 <Image
                   src="/images/ssd.jpg"
-                  className="mx-auto"
                   alt="Storage Devices"
                   width={180}
                   height={150}
+                  className="mx-auto transform transition-transform duration-300 group-hover:scale-105"
                 />
                 <h3 className="font-bold mt-4 mb-2 group-hover:text-indigo-600 transition">
                   Storage Devices
@@ -162,10 +163,10 @@ export default function Home() {
               <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
                 <Image
                   src="/images/cpu.jpeg"
-                  className="mx-auto"
                   alt="CPU"
                   width={320}
                   height={150}
+                  className="mx-auto transform transition-transform duration-300 group-hover:scale-105"
                 />
                 <h3 className="font-bold mt-4 mb-2 group-hover:text-indigo-600 transition">
                   Processors
@@ -187,10 +188,10 @@ export default function Home() {
               <div className="p-6 bg-white rounded shadow hover:shadow-lg transition cursor-pointer">
                 <Image
                   src="/images/Gpu.jpeg"
-                  className="mx-auto"
                   alt="GPU"
                   width={300}
                   height={150}
+                  className="mx-auto transform transition-transform duration-300 group-hover:scale-105"
                 />
                 <h3 className="font-bold mt-4 mb-2 group-hover:text-indigo-600 transition">
                   Graphics Cards
@@ -204,27 +205,48 @@ export default function Home() {
               </div>
             </Link>
 
-            <div>
-              <a
+            {/* See All Categories */}
+            <div className="flex items-center justify-center">
+              <Link
                 href="/categories"
-                className="text-indigo-600 w-full hover:underline font-mono"
-              ></a>
-            </div>
-            <div>
-              <a
-                href="/categories"
-                className="text-indigo-600 w-full font-bold hover:underline font-mono"
+                className="text-indigo-600 font-bold hover:underline font-mono"
               >
                 See all Categories →
-              </a>
-            </div>
-            <div>
-              <a
-                href="/categories"
-                className="text-indigo-600 w-full hover:underline font-mono"
-              ></a>
+              </Link>
             </div>
           </div>
+        </section>
+
+        {/* 🛒 Product Carousel Section */}
+        <section className=" py-16 bg-gray-50">
+          <ProductCarousel
+            products={[
+              {
+                id: 1,
+                name: "ASUS TUF Gaming VG259Q3A",
+                imageUrl: "/images/ASUS TUF VG259Q3A Full HD 24.5.jpg",
+                price: 299,
+              },
+              {
+                id: 2,
+                name: "Intel Core i5-14400 Processor",
+                imageUrl: "/images/Intel Core i5-14400F.jpg",
+                price: 220,
+              },
+              {
+                id: 3,
+                name: "CyberPowerPC Gamer Master ",
+                imageUrl: "/images/CyberPowerPC Gamer Master Gaming PC.jpg",
+                price: 1200,
+              },
+              {
+                id: 4,
+                name: "GIGABYTE GeForce RTX 5060",
+                imageUrl: "/images/GIGABYTE GeForce RTX 5060.jpg",
+                price: 450,
+              },
+            ]}
+          />
         </section>
       </div>
     </div>

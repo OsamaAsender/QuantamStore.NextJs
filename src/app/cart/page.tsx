@@ -102,33 +102,42 @@ export default function CartPage() {
                     ${item.product.price.toFixed(2)}
                   </p>
                 </div>
-                <div className="grid grid-cols-[40px_40px_40px_1fr] items-center gap-2">
+                <div className="flex items-center gap-2 text-sm font-mono">
+                  {/* Decrease Button */}
                   <button
                     onClick={() => updateQuantity(item.id, item.quantity - 1)}
                     disabled={item.quantity <= 1}
-                    className={`p-1 rounded text-center ${
+                    className={`w-6 h-6 flex items-center justify-center border rounded transition ${
                       item.quantity <= 1
-                        ? "bg-gray-200 cursor-not-allowed"
-                        : "bg-gray-200 hover:bg-gray-300 cursor-pointer"
+                        ? "border-gray-300 bg-gray-100 cursor-not-allowed"
+                        : "border-gray-300 hover:bg-gray-100 cursor-pointer"
                     }`}
                   >
                     −
                   </button>
-                  <span className="text-center font-medium">
-                    {item.quantity}
-                  </span>
+
+                  {/* Quantity Display */}
+                  <span className="px-2">{item.quantity}</span>
+
+                  {/* Increase Button */}
                   <button
                     onClick={() => updateQuantity(item.id, item.quantity + 1)}
                     disabled={item.quantity >= item.product.stockQuantity}
-                    className="p-1 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer transition text-center"
+                    className={`w-6 h-6 flex items-center justify-center border rounded transition ${
+                      item.quantity >= item.product.stockQuantity
+                        ? "border-gray-300 bg-gray-100 cursor-not-allowed"
+                        : "border-gray-300 hover:bg-gray-100 cursor-pointer"
+                    }`}
                   >
                     +
                   </button>
+
+                  {/* Remove Button */}
                   <button
                     onClick={() => removeItemHandler(item.id)}
-                    className="text-red-500 text-sm justify-self-end hover:bg-gray-200 p-1 rounded-full transition cursor-pointer"
+                    className="ml-2 text-gray-500 p-1 rounded hover:bg-gray-100 transition cursor-pointer"
                   >
-                    <FontAwesomeIcon icon={faTrash} />
+                    🗑️
                   </button>
                 </div>
               </div>

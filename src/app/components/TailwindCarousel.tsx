@@ -10,21 +10,21 @@ export default function TailwindCarousel() {
       title: "Built to Dominate",
       text: "CyberPowerPC Gamer Master — ready for battle, right out of the box.",
       image: "/images/CyberPowerPC Gamer Master Gaming PC.jpg",
-      button: "Shop Desktop",
+      button: "Shop Now",
     },
     {
       id: 2,
       title: "Smooth & Fast Visuals",
       text: "ASUS TUF VG249QM — 165Hz refresh rate for ultra-responsive gameplay.",
       image: "/images/ASUS TUF VG259Q3A Full HD 24.5.jpg",
-      button: "Shop Monitor",
+      button: "Shop Now",
     },
     {
       id: 3,
       title: "Efficient Multitasking",
       text: "Intel Core i5-14400 — perfect balance of power and value.",
       image: "/images/Intel Core i5-14400F.jpg",
-      button: "Shop Processor",
+      button: "Shop Now",
     },
   ];
 
