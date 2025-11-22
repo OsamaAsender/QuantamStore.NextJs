@@ -10,7 +10,7 @@ export default function SelectFilter({
   hideLabel = false,
 }: SelectFilterProps & { hideLabel?: boolean }) {
   return (
-    <div className="w-full max-w-xs">
+    <div className="w-full max-w-xs font-mono">
       {!hideLabel && (
         <label className="block text-sm font-medium text-gray-700 mb-1">
           {label}
@@ -21,7 +21,7 @@ export default function SelectFilter({
         value={value}
         onChange={onChange}
         isClearable
-        className="react-select-container"
+        className="react-select-container shadow"
         classNamePrefix="react-select"
         styles={{
           control: (base, state) => ({

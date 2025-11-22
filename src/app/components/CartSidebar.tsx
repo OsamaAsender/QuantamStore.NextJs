@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
-import { toast } from "react-hot-toast"; 
+import { toast } from "react-hot-toast";
 
 interface CartSidebarProps {
   isOpen: boolean;
@@ -94,7 +94,7 @@ const CartSidebar = ({ isOpen, onClose }: CartSidebarProps) => {
                       {/* Increase */}
                       <button
                         disabled={disableIncrease}
-                         onClick={() => {
+                        onClick={() => {
                           updateQuantity(id, quantity + 1);
                           toast.success(`Increased ${product?.name} quantity`);
                         }}
@@ -145,15 +145,18 @@ const CartSidebar = ({ isOpen, onClose }: CartSidebarProps) => {
             View Cart
           </button>
 
-          <button
-            onClick={() => {
-              onClose();
-              router.push("/checkout/details");
-            }}
-            className="bg-indigo-600 text-white py-2 px-4 rounded text-center hover:bg-indigo-800 cursor-pointer"
-          >
-            Proceed to Checkout
-          </button>
+          {/* ✅ Only show Proceed to Checkout if cart has items */}
+          {items.length > 0 && (
+            <button
+              onClick={() => {
+                onClose();
+                router.push("/checkout/details");
+              }}
+              className="bg-indigo-600 text-white py-2 px-4 rounded text-center hover:bg-indigo-800 cursor-pointer"
+            >
+              Proceed to Checkout
+            </button>
+          )}
         </div>
       </div>
     </aside>

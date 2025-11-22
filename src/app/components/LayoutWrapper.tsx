@@ -12,7 +12,7 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 
   return (
     <AuthProvider>
-      <div className="flex flex-col min-h-screen bg-slate-100">
+      <div className="flex flex-col min-h-screen bg-slate-50 font-mono">
         {!isAdminRoute && <Navbar />}
         <Toaster position="top-right" reverseOrder={false} />
         <main className="flex-grow">{children}</main>
