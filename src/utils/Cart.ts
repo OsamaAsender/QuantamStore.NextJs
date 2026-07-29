@@ -1,4 +1,6 @@
 import { toast } from "react-hot-toast";
+import { apiRequest } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config/api";
 
 export type AddToCartDto = {
   productId: number;
@@ -9,16 +11,10 @@ export async function handleAddToCart(productId: number, quantity = 1) {
   const payload: AddToCartDto = { productId, quantity };
 
   try {
-    const res = await fetch("https://localhost:7227/api/cart/add", {
+    const data = await apiRequest(API_ENDPOINTS.CART_ADD, {
       method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-
-    if (!res.ok) throw new Error(await res.text());
-
-    const data = await res.json();
     toast.success("Added to cart!");
     return data;
   } catch (err: any) {
@@ -29,11 +25,7 @@ export async function handleAddToCart(productId: number, quantity = 1) {
 
 export async function fetchCart() {
   try {
-    const res = await fetch("https://localhost:7227/api/cart", {
-      credentials: "include",
-    });
-    if (!res.ok) throw new Error("Failed to fetch cart");
-    return await res.json();
+    return await apiRequest(API_ENDPOINTS.CART);
   } catch (err: any) {
     toast.error("Could not load cart.");
     throw err;
@@ -42,16 +34,10 @@ export async function fetchCart() {
 
 export async function updateCartItem(itemId: number, quantity: number) {
   try {
-    const res = await fetch(`https://localhost:7227/api/cart/item/${itemId}`, {
+    const data = await apiRequest(API_ENDPOINTS.CART_ITEM(itemId), {
       method: "PUT",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity }),
     });
-
-    if (!res.ok) throw new Error("Update failed");
-
-    const data = await res.json();
     toast.success("Quantity updated");
     return data;
   } catch (err: any) {
@@ -62,14 +48,9 @@ export async function updateCartItem(itemId: number, quantity: number) {
 
 export async function removeCartItem(itemId: number) {
   try {
-    const res = await fetch(`https://localhost:7227/api/cart/item/${itemId}`, {
+    const data = await apiRequest(API_ENDPOINTS.CART_ITEM(itemId), {
       method: "DELETE",
-      credentials: "include",
     });
-
-    if (!res.ok) throw new Error("Remove failed");
-
-    const data = await res.json();
     toast.success("Item removed");
     return data;
   } catch (err: any) {
@@ -80,14 +61,9 @@ export async function removeCartItem(itemId: number) {
 
 export async function checkoutCart() {
   try {
-    const res = await fetch("https://localhost:7227/api/cart/checkout", {
+    const data = await apiRequest<{ total: number }>(API_ENDPOINTS.CART_CHECKOUT, {
       method: "POST",
-      credentials: "include",
     });
-
-    if (!res.ok) throw new Error("Checkout failed");
-
-    const data = await res.json();
     toast.success(`Order placed! Total: $${data.total}`);
     return data;
   } catch (err: any) {

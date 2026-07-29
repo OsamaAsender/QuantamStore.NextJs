@@ -8,10 +8,12 @@ import { useAuth } from "@/context/AuthContext";
 import { Product } from "../../types/product";
 import toast from "react-hot-toast";
 import ProductTabs from "@/app/components/ProductTabs";
+import { apiRequest } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config/api";
 
 export default function ProductPage() {
   const { id } = useParams();
-  const [product, setProduct] = useState(null);
+  const [product, setProduct] = useState<Product | null>(null);
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -36,10 +38,7 @@ export default function ProductPage() {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const res = await fetch(`https://localhost:7227/api/products/${id}`, {
-        credentials: "include",
-      });
-      const data = await res.json();
+      const data = await apiRequest<Product>(API_ENDPOINTS.PRODUCT_BY_ID(Number(id)));
       setProduct(data);
     };
 

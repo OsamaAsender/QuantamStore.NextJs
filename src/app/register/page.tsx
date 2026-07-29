@@ -9,6 +9,8 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
+import { apiRequest } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config/api";
 
 type RegisterFormData = z.infer<typeof registerSchema>;
 
@@ -30,15 +32,10 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const res = await fetch("https://localhost:7227/api/auth/register", {
+      const result = await apiRequest<{ user: { username: string } }>(API_ENDPOINTS.AUTH_REGISTER, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify(data),
       });
-
-      const result = await res.json();
-      if (!res.ok) throw new Error(result.message || "Registration failed.");
 
       setTimeout(async () => {
         toast.success("Welcome, " + result.user.username + "!");

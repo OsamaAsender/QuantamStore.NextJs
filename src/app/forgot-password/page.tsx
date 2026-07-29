@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { apiRequest } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config/api";
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -15,16 +17,10 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      const res = await fetch(
-        "https://localhost:7227/api/auth/forgot-password",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email }),
-        }
-      );
-
-      if (!res.ok) throw new Error("Something went wrong. Try again.");
+      await apiRequest(API_ENDPOINTS.AUTH_FORGOT_PASSWORD, {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      });
 
       setTimeout(() => {
         toast.success("Reset link sent! Check your inbox.");

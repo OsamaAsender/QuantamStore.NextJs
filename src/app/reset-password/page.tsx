@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import { apiRequest } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config/api";
 
 export default function ResetPasswordPage() {
   const searchParams = useSearchParams();
@@ -46,16 +48,10 @@ export default function ResetPasswordPage() {
     }
 
     try {
-      const res = await fetch(
-        "https://localhost:7227/api/auth/reset-password",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token, newPassword }),
-        }
-      );
-
-      if (!res.ok) throw new Error("Something went wrong. Please try again.");
+      await apiRequest(API_ENDPOINTS.AUTH_RESET_PASSWORD, {
+        method: "POST",
+        body: JSON.stringify({ token, newPassword }),
+      });
 
       setTimeout(() => {
         toast.success("Password reset successful! Redirecting...");

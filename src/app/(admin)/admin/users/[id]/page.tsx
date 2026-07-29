@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { User } from "../../../../types/user";
 import { DetailRow } from "../../../../components/DetailRow";
+import { apiRequest } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config/api";
 
 export default function UserDetailsPage() {
   const { id } = useParams();
@@ -15,11 +17,7 @@ export default function UserDetailsPage() {
   const router = useRouter();
 
   useEffect(() => {
-    fetch(`https://localhost:7227/api/users/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("User not found");
-        return res.json();
-      })
+    apiRequest<User>(API_ENDPOINTS.USER_BY_ID(Number(id)))
       .then((data) => setUser(data))
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));

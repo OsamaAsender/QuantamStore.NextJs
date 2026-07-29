@@ -25,6 +25,8 @@ import {
   EditUserInput,
   editUserSchema,
 } from "@/schemas/user";
+import { apiRequest } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config/api";
 
 export default function UsersPage() {
   const [users, setUsers] = useState<
@@ -63,13 +65,11 @@ export default function UsersPage() {
   // Fetch users with debounce on search
   useEffect(() => {
     const timeout = setTimeout(() => {
-      fetch(
-        `https://localhost:7227/api/users?page=${page}&pageSize=${pageSize}&search=${search}&role=${
+      apiRequest<{ users: User[]; total: number }>(
+        `${API_ENDPOINTS.USERS}?page=${page}&pageSize=${pageSize}&search=${search}&role=${
           role?.value || ""
-        }
-`
+        }`
       )
-        .then((res) => res.json())
         .then((data) => {
           setUsers(data.users);
           setTotal(data.total);
@@ -80,8 +80,9 @@ export default function UsersPage() {
 
   // Initial fetch (redundant with search, but kept for clarity)
   useEffect(() => {
-    fetch(`https://localhost:7227/api/users?page=${page}&pageSize=${pageSize}`)
-      .then((res) => res.json())
+    apiRequest<{ users: User[]; total: number }>(
+      `${API_ENDPOINTS.USERS}?page=${page}&pageSize=${pageSize}`
+    )
       .then((data) => {
         setUsers(data.users);
         setTotal(data.total);
@@ -90,18 +91,17 @@ export default function UsersPage() {
 
   const handleEditSuccess = async (updated: EditUserInput) => {
     // Re-fetch the full user by ID after update
-    const res = await fetch(`https://localhost:7227/api/users/${editUserId}`);
-    const fresh: User = await res.json();
-
-    refreshUser(fresh); // navbar updates instantly
+    if (editUserId) {
+      const fresh: User = await apiRequest(API_ENDPOINTS.USER_BY_ID(editUserId));
+      refreshUser(fresh); // navbar updates instantly
+    }
 
     // Re-fetch the full list to update the table
-    fetch(
-      `https://localhost:7227/api/users?page=${page}&pageSize=${pageSize}&search=${search}&role=${
+    apiRequest<{ users: User[]; total: number }>(
+      `${API_ENDPOINTS.USERS}?page=${page}&pageSize=${pageSize}&search=${search}&role=${
         role?.value || ""
       }`
     )
-      .then((res) => res.json())
       .then((data) => {
         setUsers(data.users);
         setTotal(data.total);
@@ -259,11 +259,7 @@ export default function UsersPage() {
         }}
         onConfirm={async () => {
           if (!selectedUserId) return;
-          const res = await fetch(
-            `https://localhost:7227/api/users/${selectedUserId}`,
-            { method: "DELETE" }
-          );
-          if (!res.ok) throw new Error("Delete failed");
+          await apiRequest(API_ENDPOINTS.USER_BY_ID(selectedUserId), { method: "DELETE" });
 
           // optimistic UI update
           setUsers((prev) => prev.filter((u) => u.id !== selectedUserId));
@@ -275,7 +271,7 @@ export default function UsersPage() {
       {showEditModal && editUserId !== null && (
         <EditModal<EditUserInput>
           itemId={String(editUserId)}
-          endpoint="https://localhost:7227/api/users"
+          endpoint={API_ENDPOINTS.USERS}
           schema={editUserSchema} // still fine — it validates only the editable fields
           fields={[
             { name: "username", label: "Username", type: "text" },
@@ -297,7 +293,7 @@ export default function UsersPage() {
 
       {showCreate && (
         <CreateModal
-          endpoint="/api/users"
+          endpoint={API_ENDPOINTS.USERS}
           schema={registerSchema}
           fields={[
             { name: "username", label: "Username", type: "text" },
@@ -314,12 +310,11 @@ export default function UsersPage() {
           onClose={() => setShowCreate(false)}
           onSuccess={() => {
             /* re-fetch list after creation */
-            fetch(
-              `https://localhost:7227/api/users?page=${page}&pageSize=${pageSize}&search=${search}&role=${
+            apiRequest<{ users: User[]; total: number }>(
+              `${API_ENDPOINTS.USERS}?page=${page}&pageSize=${pageSize}&search=${search}&role=${
                 role?.value || ""
               }`
             )
-              .then((res) => res.json())
               .then((data) => {
                 setUsers(data.users);
                 setTotal(data.total);

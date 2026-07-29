@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 import { toast } from "react-hot-toast";
+import { apiRequest } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config/api";
 
 export default function Login() {
   const { login } = useAuth();
@@ -18,18 +20,10 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch("https://localhost:7227/api/auth/login", {
+      const data = await apiRequest<{ user: { username: string } }>(API_ENDPOINTS.AUTH_LOGIN, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        throw new Error(data.message || "Login failed.");
-      }
 
       // Delay everything together
       setTimeout(async () => {

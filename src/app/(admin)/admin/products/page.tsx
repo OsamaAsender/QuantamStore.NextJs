@@ -15,6 +15,8 @@ import {
   editProductSchema,
   EditProductInput,
 } from "@/schemas/product";
+import { apiRequest } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config/api";
 type CategoryOption = { value: string; label: string };
 
 export default function ProductsPage() {
@@ -41,11 +43,8 @@ export default function ProductsPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(
-          "https://localhost:7227/api/categories/dropdown"
-        );
         const data: { label: string; value: number | string }[] =
-          await res.json();
+          await apiRequest(API_ENDPOINTS.CATEGORIES_DROPDOWN);
 
         const options = data.map((c) => ({
           label: c.label,
@@ -73,12 +72,11 @@ export default function ProductsPage() {
 
   // ✅ reusable fetch function
   const fetchProducts = async () => {
-    const res = await fetch(
-      `https://localhost:7227/api/products?page=${page}&pageSize=${pageSize}&search=${search}&categoryId=${
+    const data = await apiRequest<{ products: Product[]; total: number }>(
+      `${API_ENDPOINTS.PRODUCTS}?page=${page}&pageSize=${pageSize}&search=${search}&categoryId=${
         category?.value || ""
       }`
     );
-    const data = await res.json();
     setProducts(data.products);
     setTotal(data.total);
   };
@@ -94,7 +92,7 @@ export default function ProductsPage() {
   const handleEditSuccess = async (updated: EditProductInput) => {
     // Optionally re-fetch the single product if you want fresh data
     if (editProductId) {
-      await fetch(`https://localhost:7227/api/products/${editProductId}`);
+      await apiRequest(API_ENDPOINTS.PRODUCT_BY_ID(editProductId));
     }
 
     // ✅ just reuse the same fetch logic
@@ -214,11 +212,7 @@ export default function ProductsPage() {
         }}
         onConfirm={async () => {
           if (!selectedProductId) return;
-          const res = await fetch(
-            `https://localhost:7227/api/products/${selectedProductId}`,
-            { method: "DELETE" }
-          );
-          if (!res.ok) throw new Error("Delete failed");
+          await apiRequest(API_ENDPOINTS.PRODUCT_BY_ID(selectedProductId), { method: "DELETE" });
 
           setProducts((prev) => prev.filter((p) => p.id !== selectedProductId));
           setTotal((prev) => prev - 1);
@@ -232,7 +226,7 @@ export default function ProductsPage() {
       {showEditModal && editProductId !== null && (
         <EditModal<EditProductInput>
           itemId={String(editProductId)}
-          endpoint="https://localhost:7227/api/products"
+          endpoint={API_ENDPOINTS.PRODUCTS}
           schema={editProductSchema}
           fields={[
             { name: "name", label: "Name", type: "text" },
@@ -279,10 +273,9 @@ export default function ProductsPage() {
           ]}
           onClose={() => setShowCreate(false)}
           onSuccess={() => {
-            fetch(
-              `https://localhost:7227/api/products?page=${page}&pageSize=${pageSize}&search=${search}&categoryId=${category.value}`
+            apiRequest<{ products: Product[]; total: number }>(
+              `${API_ENDPOINTS.PRODUCTS}?page=${page}&pageSize=${pageSize}&search=${search}&categoryId=${category.value}`
             )
-              .then((res) => res.json())
               .then((data) => {
                 setProducts(data.products);
                 setTotal(data.total);

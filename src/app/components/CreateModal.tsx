@@ -7,6 +7,8 @@ import type { CreateModalProps } from "../types/createModal";
 import { DefaultValues } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
+import { apiRequestFormData } from "@/utils/api";
+import { buildUrl } from "@/config/api";
 
 export default function CreateModal<T extends Record<string, unknown>>({
   endpoint,
@@ -62,7 +64,7 @@ export default function CreateModal<T extends Record<string, unknown>>({
         console.log(k, v);
       }
 
-      const res = await fetch(`https://localhost:7227/${endpoint}`, {
+      const res = await fetch(buildUrl(endpoint), {
         method: "POST",
         body: formData,
         credentials: "include",

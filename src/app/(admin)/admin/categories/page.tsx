@@ -15,6 +15,8 @@ import {
   EditCategoryInput,
 } from "@/schemas/category";
 import { Category } from "@/app/types/category";
+import { apiRequest } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config/api";
 
 export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -46,12 +48,11 @@ export default function CategoriesPage() {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      fetch(
-        `https://localhost:7227/api/categories?page=${page}&pageSize=10&search=${search}&status=${status.value}`
+      apiRequest<{ categories: Category[]; total: number }>(
+        `${API_ENDPOINTS.CATEGORIES}?page=${page}&pageSize=10&search=${search}&status=${status.value}`
       )
-        .then((res) => res.json())
         .then((data) => {
-          setCategories(data.categories as Category[]);
+          setCategories(data.categories);
           setTotal(data.total);
         });
     }, 300);
@@ -59,10 +60,9 @@ export default function CategoriesPage() {
   }, [page, search, status]);
 
   const handleEditSuccess = async () => {
-    fetch(
-      `https://localhost:7227/api/categories?page=${page}&pageSize=10&search=${search}&status=${status.value}`
+    apiRequest<{ categories: Category[]; total: number }>(
+      `${API_ENDPOINTS.CATEGORIES}?page=${page}&pageSize=10&search=${search}&status=${status.value}`
     )
-      .then((res) => res.json())
       .then((data) => {
         setCategories(data.categories);
         setTotal(data.total);
@@ -182,11 +182,7 @@ export default function CategoriesPage() {
         }}
         onConfirm={async () => {
           if (!selectedCategoryId) return;
-          const res = await fetch(
-            `https://localhost:7227/api/categories/${selectedCategoryId}`,
-            { method: "DELETE" }
-          );
-          if (!res.ok) throw new Error("Delete failed");
+          await apiRequest(API_ENDPOINTS.CATEGORY_BY_ID(selectedCategoryId), { method: "DELETE" });
 
           setCategories((prev) =>
             prev.filter((c) => c.id !== selectedCategoryId)
@@ -202,7 +198,7 @@ export default function CategoriesPage() {
       {showEditModal && editCategoryId !== null && (
         <EditModal<EditCategoryInput>
           itemId={String(editCategoryId)}
-          endpoint="https://localhost:7227/api/categories"
+          endpoint={API_ENDPOINTS.CATEGORIES}
           schema={editCategorySchema}
           fields={[
             { name: "name", label: "Name", type: "text" },
@@ -219,7 +215,7 @@ export default function CategoriesPage() {
 
       {showCreate && (
         <CreateModal
-          endpoint="/api/categories"
+          endpoint={API_ENDPOINTS.CATEGORIES}
           schema={createCategorySchema}
           fields={[
             { name: "name", label: "Name", type: "text" },

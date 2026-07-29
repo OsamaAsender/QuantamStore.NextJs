@@ -1,6 +1,10 @@
 // src/utils/fetchCamel.ts
+import { buildUrl } from "@/config/api";
+
 export async function fetchCamel<T>(url: string): Promise<T> {
-  const res = await fetch(url);
+  const res = await fetch(buildUrl(url), {
+    credentials: "include",
+  });
   if (!res.ok) throw new Error(String(res.status));
   const payload = await res.json();
 

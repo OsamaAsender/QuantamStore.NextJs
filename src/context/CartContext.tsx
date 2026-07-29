@@ -1,6 +1,8 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { apiRequest } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config/api";
 
 type CartItem = {
   id: number;
@@ -38,11 +40,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const refreshCart = async () => {
     try {
-      const res = await fetch("https://localhost:7227/api/cart", {
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Failed to fetch cart");
-      const data = await res.json();
+      const data = await apiRequest<{ items: CartItem[] }>(API_ENDPOINTS.CART);
 
       const list = Array.isArray(data.items) ? data.items : [];
       const totalItems = list.reduce((sum, item) => sum + item.quantity, 0);
@@ -59,19 +57,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const updateQuantity = async (id: number, quantity: number) => {
     console.log("📦 updateQuantity called:", { id, quantity });
-    const url = `https://localhost:7227/api/cart/item/${id}`;
+    const url = API_ENDPOINTS.CART_ITEM(id);
     console.log("➡️ PUT URL:", url);
 
     try {
-      const res = await fetch(url, {
+      await apiRequest(url, {
         method: "PUT",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ quantity }),
-        credentials: "include",
       });
-      if (!res.ok) {
-        console.error("❌ updateQuantity failed:", res.status, res.statusText);
-      }
       await refreshCart();
     } catch (err) {
       console.error("❌ updateQuantity error:", err);
@@ -80,17 +73,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const removeItem = async (id: number) => {
     console.log("🗑️ removeItem called:", { id });
-    const url = `https://localhost:7227/api/cart/item/${id}`;
+    const url = API_ENDPOINTS.CART_ITEM(id);
     console.log("➡️ DELETE URL:", url);
 
     try {
-      const res = await fetch(url, {
+      await apiRequest(url, {
         method: "DELETE",
-        credentials: "include",
       });
-      if (!res.ok) {
-        console.error("❌ removeItem failed:", res.status, res.statusText);
-      }
       await refreshCart();
     } catch (err) {
       console.error("❌ removeItem error:", err);

@@ -15,6 +15,7 @@ import { fetchCamel } from "@/utils/fetchCamel";
 import { useAuth } from "@/context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperclip } from "@fortawesome/free-solid-svg-icons";
+import { buildUrl } from "@/config/api";
 
 export default function EditModal<T extends Record<string, unknown>>({
   itemId,
@@ -96,9 +97,10 @@ export default function EditModal<T extends Record<string, unknown>>({
           }
         });
 
-        res = await fetch(`${endpoint}/${itemId}`, {
+        res = await fetch(buildUrl(`${endpoint}/${itemId}`), {
           method: "PUT",
           body: fd, // no headers, browser sets multipart boundary
+          credentials: "include",
         });
       } else {
         // fallback to JSON for non-file updates
@@ -109,10 +111,11 @@ export default function EditModal<T extends Record<string, unknown>>({
           return acc;
         }, {} as any);
 
-        res = await fetch(`${endpoint}/${itemId}`, {
+        res = await fetch(buildUrl(`${endpoint}/${itemId}`), {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(body),
+          credentials: "include",
         });
       }
 

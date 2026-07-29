@@ -8,6 +8,8 @@ import { handleAddToCart } from "@/utils/Cart";
 import Pagination from "../components/Pagination";
 import ProductCard from "../components/ProductCard";
 import { useSearchParams } from "next/navigation";
+import { apiRequest } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config/api";
 
 type CategoryOption = { value: string; label: string };
 
@@ -36,11 +38,8 @@ export default function StorePage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(
-          "https://localhost:7227/api/categories/dropdown"
-        );
         const data: { label: string; value: number | string }[] =
-          await res.json();
+          await apiRequest(API_ENDPOINTS.CATEGORIES_DROPDOWN);
 
         const options = data.map((c) => ({
           label: c.label,
@@ -71,10 +70,9 @@ export default function StorePage() {
     const timeout = setTimeout(() => {
       const fetchProducts = async () => {
         try {
-          const res = await fetch(
-            `https://localhost:7227/api/products?page=${page}&pageSize=${pageSize}&search=${search}&categoryId=${category.value}`
+          const data = await apiRequest<{ products: Product[]; total: number }>(
+            `${API_ENDPOINTS.PRODUCTS}?page=${page}&pageSize=${pageSize}&search=${search}&categoryId=${category.value}`
           );
-          const data = await res.json();
           setProducts(data.products);
           setTotal(data.total);
         } catch (err) {

@@ -1,6 +1,8 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { apiRequest } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config/api";
 
 type User = {
   id: number;
@@ -27,11 +29,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const fetchUser = async () => {
     try {
-      const res = await fetch("https://localhost:7227/api/auth/me", {
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("Not authenticated");
-      const data = await res.json();
+      const data = await apiRequest<User>(API_ENDPOINTS.AUTH_ME);
       setUser(data);
       setIsAuthenticated(true);
     } catch {
@@ -47,10 +45,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async () => fetchUser(); // reuse the same fetch
 
   const logout = async () => {
-    await fetch("https://localhost:7227/api/auth/logout", {
-      method: "POST",
-      credentials: "include",
-    });
+    await apiRequest(API_ENDPOINTS.AUTH_LOGOUT, { method: "POST" });
     setUser(null);
     setIsAuthenticated(false);
   };

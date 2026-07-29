@@ -9,6 +9,8 @@ import { toast } from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useCart } from "@/context/CartContext";
 import CartSidebar from "./CartSidebar";
+import { apiRequest } from "@/utils/api";
+import { API_ENDPOINTS } from "@/config/api";
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -23,12 +25,7 @@ export default function Navbar() {
   // Logout handler
   const handleLogout = async () => {
     try {
-      const res = await fetch("https://localhost:7227/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error((await res.text()) || "Logout failed");
-
+      await apiRequest(API_ENDPOINTS.AUTH_LOGOUT, { method: "POST" });
       await logout();
       toast.success("Logged out successfully!");
       router.push("/");
