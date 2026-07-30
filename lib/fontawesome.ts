@@ -8,7 +8,7 @@ import {
   faEdit,
   faTrash,
   faPlus,
-  faMagnifyingGlass ,
+  faMagnifyingGlass,
   faLayerGroup,
   faTruckFast,
   faShoppingCart,
@@ -17,7 +17,35 @@ import {
   faArrowRightFromBracket,
   faAnglesLeft,
   faAnglesRight,
-  faPaperclip
+  faPaperclip,
 } from '@fortawesome/free-solid-svg-icons';
 
-library.add(faUser, faCartShopping, faRightToBracket, faEye, faEdit, faTrash, faPlus, faMagnifyingGlass, faLayerGroup, faTruckFast, faShoppingCart, faGift, faGear, faArrowRightFromBracket, faAnglesLeft, faAnglesRight,faPaperclip);
+import {
+  faInstagram,
+  faFacebook,
+  faWhatsapp,
+} from '@fortawesome/free-brands-svg-icons';
+
+// ✅ Add both solid and brand icons
+library.add(
+  faUser,
+  faCartShopping,
+  faRightToBracket,
+  faEye,
+  faEdit,
+  faTrash,
+  faPlus,
+  faMagnifyingGlass,
+  faLayerGroup,
+  faTruckFast,
+  faShoppingCart,
+  faGift,
+  faGear,
+  faArrowRightFromBracket,
+  faAnglesLeft,
+  faAnglesRight,
+  faPaperclip,
+  faInstagram,
+  faFacebook,
+  faWhatsapp
+);
