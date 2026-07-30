@@ -237,7 +237,6 @@ export default function Navbar() {
               value={search}
               onChange={(val) => {
                 setSearch(val);
-                setPage(1);
               }}
             />
           </div>
