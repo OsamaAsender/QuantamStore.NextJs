@@ -61,3 +61,24 @@ body {
   background-color: #6366f1; /* Indigo-500 */
   opacity: 1;
 }
+.react-tooltip {
+  background-color: #111 !important; /* consistent dark shade */
+  color: #fff !important;
+  border: none;
+  z-index: 9999;
+
+  /* Animation setup */
+  opacity: 0;
+  transform: scale(0.95) translateY(4px);
+  transition: 
+    opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.react-tooltip[data-tooltip-show] {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+

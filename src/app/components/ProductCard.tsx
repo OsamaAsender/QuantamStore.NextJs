@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
 import { useCartActions } from "@/hooks/useCartActions";
 import { toast } from "react-hot-toast";
+import { Tooltip } from "react-tooltip";
 
 export default function ProductCard({ product }: { product: Product }) {
   const { user, isAuthenticated } = useAuth();
@@ -70,7 +71,11 @@ export default function ProductCard({ product }: { product: Product }) {
                 )}
               </div>
               {/* Add Button */}
+              <Tooltip id="cart-tip" place="top"/>
+
               <button
+                data-tooltip-id="cart-tip"
+                data-tooltip-content="Add to cart"
                 onClick={handleAddToCart}
                 disabled={loading || product.stockQuantity <= 0}
                 className="px-1.5 rounded border hover:bg-slate-50 cursor-pointer transition"
