@@ -138,7 +138,7 @@ export default function SearchInput({
                     <img
                       src={product.imageUrl}
                       alt={product.name}
-                      className="w-20 h-20 object-contain mb-2 transition-transform duration-300 group-hover:scale-105"
+                      className="w-50 h-50 object-contain mb-2 transition-transform duration-300 group-hover:scale-105"
                     />
                     <p className="text-sm font-medium group-hover:text-indigo-600 transition">
                       {product.name}

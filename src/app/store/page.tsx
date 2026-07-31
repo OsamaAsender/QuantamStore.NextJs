@@ -10,6 +10,7 @@ import ProductCard from "../components/ProductCard";
 import { useSearchParams } from "next/navigation";
 import { apiRequest } from "@/utils/api";
 import { API_ENDPOINTS } from "@/config/api";
+import FilterSidebar from "../components/FilterSidebar";
 
 type CategoryOption = { value: string; label: string };
 
@@ -22,6 +23,10 @@ export default function StorePage() {
   const [category, setCategory] = useState<CategoryOption>({
     value: "",
     label: "All Categories",
+  });
+  const [filters, setFilters] = useState({
+    availability: { inStock: false, outOfStock: false },
+    priceRange: [0, 780],
   });
 
   const pageSizeOptions = [
@@ -52,7 +57,7 @@ export default function StorePage() {
         // Match query param to category label
         if (initialCategorySlug) {
           const matched = allOptions.find((opt) =>
-            opt.label.toLowerCase().includes(initialCategorySlug.toLowerCase())
+            opt.label.toLowerCase().includes(initialCategorySlug.toLowerCase()),
           );
           if (matched) {
             setCategory(matched);
@@ -71,7 +76,7 @@ export default function StorePage() {
       const fetchProducts = async () => {
         try {
           const data = await apiRequest<{ products: Product[]; total: number }>(
-            `${API_ENDPOINTS.PRODUCTS}?page=${page}&pageSize=${pageSize}&search=${search}&categoryId=${category.value}`
+            `${API_ENDPOINTS.PRODUCTS}?page=${page}&pageSize=${pageSize}&search=${search}&categoryId=${category.value}&inStock=${filters.availability.inStock}&outOfStock=${filters.availability.outOfStock}&minPrice=${filters.priceRange[0]}&maxPrice=${filters.priceRange[1]}`,
           );
           setProducts(data.products);
           setTotal(data.total);
@@ -84,122 +89,95 @@ export default function StorePage() {
     }, 300);
 
     return () => clearTimeout(timeout);
-  }, [page, pageSize, search, category]);
+  }, [page, pageSize, search, category, filters]);
 
-  const categoryTree = [
-    {
-      label: "Monitors",
-      subcategories: [
-        "Gaming Monitors",
-        "Professional Monitors",
-        "Curved Monitors",
-        "Ultrawide Monitors",
-        "4K Monitors",
-        "144Hz+ Refresh Rate",
-        "G-SYNC / FreeSync",
-      ],
-    },
-    {
-      label: "Prebuilt PCs",
-      subcategories: [
-        "Entry-Level PCs",
-        "Mid-Range Gaming PCs",
-        "High-End Gaming PCs",
-        "Streaming PCs",
-        "Mini PCs",
-        "Intel-Based",
-        "AMD-Based",
-      ],
-    },
-    {
-      label: "Gaming Headsets",
-      subcategories: [
-        "Wired",
-        "Wireless",
-        "Surround Sound",
-        "Noise-Canceling Mics",
-        "Console-Compatible",
-        "RGB Headsets",
-      ],
-    },
-    {
-      label: "Storage Devices",
-      subcategories: [
-        "Internal SSDs",
-        "External SSDs",
-        "Internal HDDs",
-        "External HDDs",
-        "NVMe Drives",
-        "USB Flash Drives",
-      ],
-    },
-    {
-      label: "Processors",
-      subcategories: [
-        "Intel Core",
-        "AMD Ryzen",
-        "Intel Xeon",
-        "Threadripper",
-        "Overclockable",
-        "Integrated Graphics",
-      ],
-    },
-    {
-      label: "Graphics Cards",
-      subcategories: [
-        "NVIDIA RTX",
-        "AMD Radeon RX",
-        "Entry-Level GPUs",
-        "Mid-Range GPUs",
-        "High-End GPUs",
-        "Workstation GPUs",
-      ],
-    },
-  ];
+  // const categoryTree = [
+  //   {
+  //     label: "Monitors",
+  //     subcategories: [
+  //       "Gaming Monitors",
+  //       "Professional Monitors",
+  //       "Curved Monitors",
+  //       "Ultrawide Monitors",
+  //       "4K Monitors",
+  //       "144Hz+ Refresh Rate",
+  //       "G-SYNC / FreeSync",
+  //     ],
+  //   },
+  //   {
+  //     label: "Prebuilt PCs",
+  //     subcategories: [
+  //       "Entry-Level PCs",
+  //       "Mid-Range Gaming PCs",
+  //       "High-End Gaming PCs",
+  //       "Streaming PCs",
+  //       "Mini PCs",
+  //       "Intel-Based",
+  //       "AMD-Based",
+  //     ],
+  //   },
+  //   {
+  //     label: "Gaming Headsets",
+  //     subcategories: [
+  //       "Wired",
+  //       "Wireless",
+  //       "Surround Sound",
+  //       "Noise-Canceling Mics",
+  //       "Console-Compatible",
+  //       "RGB Headsets",
+  //     ],
+  //   },
+  //   {
+  //     label: "Storage Devices",
+  //     subcategories: [
+  //       "Internal SSDs",
+  //       "External SSDs",
+  //       "Internal HDDs",
+  //       "External HDDs",
+  //       "NVMe Drives",
+  //       "USB Flash Drives",
+  //     ],
+  //   },
+  //   {
+  //     label: "Processors",
+  //     subcategories: [
+  //       "Intel Core",
+  //       "AMD Ryzen",
+  //       "Intel Xeon",
+  //       "Threadripper",
+  //       "Overclockable",
+  //       "Integrated Graphics",
+  //     ],
+  //   },
+  //   {
+  //     label: "Graphics Cards",
+  //     subcategories: [
+  //       "NVIDIA RTX",
+  //       "AMD Radeon RX",
+  //       "Entry-Level GPUs",
+  //       "Mid-Range GPUs",
+  //       "High-End GPUs",
+  //       "Workstation GPUs",
+  //     ],
+  //   },
+  // ];
 
   return (
     <div className="container mx-auto p-5 fade-in">
-      <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-10">
         {/* Sidebar Filter */}
-        <aside className="bg-white p-4 rounded shadow w-64">
-          <h2 className="text-lg font-bold mb-4">Filters</h2>
-
-          <div className="space-y-4">
-            {categoryTree.map((cat) => (
-              <div key={cat.label}>
-                <h3 className="font-semibold text-sm mb-1">{cat.label}</h3>
-                <ul className="ml-4 space-y-1">
-                  {cat.subcategories.map((sub) => (
-                    <li
-                      key={sub}
-                      className="text-sm text-gray-700 cursor-pointer hover:underline"
-                      onClick={() => {
-                        setCategory({ value: sub, label: sub });
-                        setPage(1); // Reset pagination
-                      }}
-                    >
-                      {sub}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+        <aside className="p-4 mr-6 rounded w-64">
+          <FilterSidebar
+            onFilterChange={(filter: any) => {
+              setFilters(filter);
+              setPage(1); // reset pagination when filters change
+            }}
+          />
         </aside>
 
         {/* Main Content */}
         <main>
           <div className="mb-6 grid grid-cols-1 md:grid-cols-[80%_20%] gap-4 items-center ">
-            {/* Search Input */}
-            <SearchInput
-              value={search}
-              onChange={(val) => {
-                setSearch(val);
-                setPage(1);
-              }}
-              placeholder="Search products..."
-            />
-
             {/* Page Size Filter */}
             <SelectFilter
               label="Page Size"
