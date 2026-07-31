@@ -81,12 +81,12 @@ export default function SearchInput({
   return (
     <div className="relative w-full">
       {/* Input container */}
-      <div className="flex items-center w-full bg-white rounded-full border border-gray-300 shadow-sm overflow-hidden mt-5 py-2">
+      <div className="flex items-center w-full bg-white rounded-full border border-gray-300 shadow-sm overflow-hidden mt-5 py-1 focus-within:border-indigo-500">
         {/* Category Select */}
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(Number(e.target.value))}
-          className="appearance-none bg-transparent text-gray-700 font-semibold pl-4 pr-6 py-2 focus:outline-none cursor-pointer"
+          className="appearance-none bg-transparent text-gray-700 font-semibold px-6 py-2 focus:outline-none cursor-pointer"
         >
           {categories.map((cat) => (
             <option key={cat.id} value={cat.id}>

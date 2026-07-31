@@ -13,7 +13,11 @@ import { apiRequest } from "@/utils/api";
 import { API_ENDPOINTS } from "@/config/api";
 import SearchInput from "./SearchInput";
 import SelectFilter from "./SelectFilter";
-import { faFacebook, faInstagram, faWhatsapp } from "@fortawesome/free-brands-svg-icons";
+import {
+  faFacebook,
+  faInstagram,
+  faWhatsapp,
+} from "@fortawesome/free-brands-svg-icons";
 
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -25,6 +29,16 @@ export default function Navbar() {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [showSubMenu, setShowSubMenu] = useState(true);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) setShowSubMenu(false);
+      else setShowSubMenu(true);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Logout handler
   const handleLogout = async () => {
@@ -58,8 +72,8 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="bg-white shadow font-mono px-4 py-3">
-        <div className="container mx-auto flex items-center justify-between md:justify-around">
+      <nav className="bg-white font-mono px-4 py-3">
+        <div className=" mx-auto flex items-center justify-between container">
           {/* Mobile Overlay */}
           {isMobileOpen && (
             <div
@@ -217,10 +231,10 @@ export default function Navbar() {
           </button>
         </div>
       </nav>
-      <div className="mb-6 flex items-center justify-between mx-auto">
-        <div className="grid grid-cols-12 gap-17 items-center w-full container ">
+      <header className="sticky top-0 z-40 bg-white shadow-[0_4px_6px_rgba(0,0,0,0.1)]">
+        <div className="container mx-auto grid grid-cols-12 items-center">
           {/* Logo - 20% */}
-          <div className="col-span-2 flex items-center gap-2 text-xl mt-5">
+          <div className="col-span-2 flex items-center gap-2 text-xl">
             <Link href="/" className="flex items-center gap-2 text-xl">
               <img
                 src="/images/quantamLogo2.png"
@@ -232,23 +246,18 @@ export default function Navbar() {
           </div>
 
           {/* Search Input - 60% */}
-          <div className="col-span-8">
-            <SearchInput
-              value={search}
-              onChange={(val) => {
-                setSearch(val);
-              }}
-            />
+          <div className="col-span-8 mb-5">
+            <SearchInput value={search} onChange={(val) => setSearch(val)} />
           </div>
 
           {/* Auth Links / Profile + Cart - 20% */}
-          <div className="col-span-2 flex justify-end mt-5">
+          <div className="col-span-2 flex justify-end">
             <ul className="hidden md:flex gap-5 items-center text-gray-500">
               {isAuthenticated ? (
                 <>
                   {/* Profile Dropdown */}
                   <div
-                    className="relative group"
+                    className="relative"
                     onClick={() => setProfileOpen((prev) => !prev)}
                   >
                     <button
@@ -262,9 +271,11 @@ export default function Navbar() {
 
                     <div
                       id="profile-dropdown"
-                      className={`absolute top-full right-0 mt-2 bg-white shadow rounded text-sm font-mono z-50 min-w-[150px] transition-all duration-300
-              ${profileOpen ? "opacity-100 visible" : "opacity-0 invisible"}
-            `}
+                      className={`absolute top-full right-0 mt-2 bg-white shadow rounded text-sm font-mono z-50 min-w-[150px] transition-all duration-300 ${
+                        profileOpen
+                          ? "opacity-100 visible"
+                          : "opacity-0 invisible"
+                      }`}
                     >
                       <Link
                         href="/profile"
@@ -312,18 +323,45 @@ export default function Navbar() {
               ) : (
                 <ul className="flex space-x-2">
                   <li>
-                    <Link href="/login" className="hover:text-indigo-600 transition">Login</Link>
+                    <Link
+                      href="/login"
+                      className="hover:text-indigo-600 transition"
+                    >
+                      Login
+                    </Link>
                   </li>
                   <span className="text-indigo-600">|</span>
                   <li>
-                    <Link href="/register" className="hover:text-indigo-600 transition">Register</Link>
+                    <Link
+                      href="/register"
+                      className="hover:text-indigo-600 transition"
+                    >
+                      Register
+                    </Link>
                   </li>
                 </ul>
               )}
             </ul>
           </div>
         </div>
-      </div>
+      </header>
+      {/* Toggleable sub‑menu */}
+      <ul
+        className={`transition-all duration-300 bg-indigo-500 text-white flex justify-center gap-6 py-2 ${
+          showSubMenu
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 -translate-y-4 pointer-events-none"
+        }`}
+      >
+        <li>Console</li>
+        <li>Gaming Accessories</li>
+        <li>Streaming</li>
+        <li>PC & Laptop Zone</li>
+        <li>Simulators</li>
+        <li>Gaming Chairs & Desk</li>
+        <li>Lights</li>
+        <li>Collectables</li>
+      </ul>
       {/* Sidebar itself */}
       <CartSidebar
         isOpen={isCartOpen}
