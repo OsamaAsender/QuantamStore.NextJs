@@ -7,7 +7,7 @@ export default function AboutPage() {
     <main className="min-h-screen bg-white text-gray-800 fade-in">
       {/* Hero */}
       <section
-        className="relative h-[420px] md:h-[520px] w-full bg-cover bg-center flex items-end"
+        className="relative h-[340px] sm:h-[420px] md:h-[520px] w-full bg-cover bg-center flex items-end"
         style={{
           backgroundImage:
             "linear-gradient(to right, rgba(73, 16, 231, 0.91), rgba(32, 57, 170, 0.65)), url('/images/heroBg.jpeg')",
@@ -17,7 +17,7 @@ export default function AboutPage() {
           <span className="text-xs font-bold uppercase tracking-widest text-white mb-3 block">
             About Us
           </span>
-          <h1 className="text-3xl md:text-5xl font-bold text-white leading-tight max-w-2xl">
+          <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-white leading-tight max-w-2xl break-words">
             More speakers.
             <br />
             Bigger sound.
@@ -26,7 +26,7 @@ export default function AboutPage() {
       </section>
 
       {/* Mission */}
-      <section className="py-16 md:py-24 px-6">
+      <section className="py-12 sm:py-16 md:py-24 px-4 sm:px-6">
         <div className="container mx-auto max-w-3xl text-center">
           <h2 className="text-2xl md:text-3xl font-semibold text-gray-900 mb-8 leading-snug">
             Technology built around people, designed to inspire and empower.
@@ -54,7 +54,7 @@ export default function AboutPage() {
               Your trusted gaming & tech store
             </p>
 
-            <address className="not-italic text-sm text-gray-600 space-y-2">
+            <address className="not-italic text-sm text-gray-600 space-y-2 break-words">
               <p>Al Swaifieh, Front of Chapatis Restaurant</p>
               <p>Amman, Jordan</p>
               <p>

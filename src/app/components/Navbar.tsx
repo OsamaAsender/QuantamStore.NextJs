@@ -6,6 +6,7 @@ import {
   faUser,
   faCartShopping,
   faChevronDown,
+  faBars,
 } from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
@@ -78,10 +79,13 @@ export default function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showSubMenu, setShowSubMenu] = useState(true);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) setShowSubMenu(false);
+      const hasScrolled = window.scrollY > 50;
+      setScrolled(hasScrolled);
+      if (hasScrolled) setShowSubMenu(false);
       else setShowSubMenu(true);
     };
     window.addEventListener("scroll", handleScroll);
@@ -284,6 +288,20 @@ export default function Navbar() {
           <div className="container mx-auto grid grid-cols-12 items-center">
           {/* Logo - 20% */}
           <div className="col-span-2 flex items-center gap-2 text-xl">
+            <button
+              type="button"
+              onClick={() => setShowSubMenu((prev) => !prev)}
+              className={`hidden md:flex items-center justify-center w-8 h-8 rounded text-gray-600 hover:text-gray-800 hover:bg-gray-100 cursor-pointer transition-all duration-300 ${
+                pathname === "/"
+                  ? scrolled
+                    ? "opacity-100 translate-x-0 pointer-events-auto"
+                    : "opacity-0 -translate-x-4 pointer-events-none"
+                  : "opacity-100 translate-x-0"
+              }`}
+              aria-label="Toggle categories"
+            >
+              <FontAwesomeIcon icon={faBars} />
+            </button>
             <Link href="/" className="flex items-center gap-2 text-xl">
               <img
                 src="/images/quantamLogo2.png"
@@ -446,44 +464,14 @@ export default function Navbar() {
       {/* Sidebar itself */}
       <CartSidebar
         isOpen={isCartOpen}
-        items={[
-          {
-            id: 1,
-            name: "ASUS TUF Gaming VG259Q3A Monitor",
-            imageUrl: "/images/ASUS TUF VG259Q3A Full HD 24.5.jpg",
-            price: 299,
-          },
-          {
-            id: 2,
-            name: "Intel Core i5-14400 Processor",
-            imageUrl: "/images/Intel Core i5-14400F.jpg",
-            price: 220,
-          },
-          {
-            id: 3,
-            name: "CyberPowerPC Gamer Master Desktop",
-            imageUrl: "/images/CyberPowerPC Gamer Master Gaming PC.jpg",
-            price: 1200,
-          },
-          {
-            id: 4,
-            name: "GIGABYTE GeForce RTX 5060",
-            imageUrl: "/images/GIGABYTE GeForce RTX 5060.jpg",
-            price: 450,
-          },
-        ]}
-        onRemove={(id) => console.log("Remove item", id)}
         onClose={() => setIsCartOpen(false)}
       />
       {/* Cart Sidebar (hidden by default) */}
       {isCartOpen && (
-        <>
-          {/* Overlay behind cart sidebar */}
-          <div
-            className="fixed inset-0 bg-gradient-to-l from-black/70 to-transparent z-[60] transition-opacity duration-300 ease-in-out"
-            onClick={() => setIsCartOpen(false)}
-          />
-        </>
+        <div
+          className="fixed inset-0 bg-gradient-to-l from-black/70 to-transparent z-[60] transition-opacity duration-300 ease-in-out"
+          onClick={() => setIsCartOpen(false)}
+        />
       )}
     </>
   );
