@@ -116,41 +116,44 @@ export default function SearchInput({
         </button>
       </div>
 
-      {/* Results dropdown */}
-      {value && (loading || results.length > 0) && (
-        <div
-          ref={dropdownRef}
-          className="absolute top-full left-0 w-full bg-white shadow-lg rounded mt-2 z-50 p-4 transition-opacity duration-200"
-        >
-          {loading ? (
-            <p className="text-gray-500 text-center">Searching...</p>
-          ) : (
-            <>
-              <p className="text-gray-500 text-sm mb-3">Related Products</p>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                {results.map((product) => (
-                  <Link
-                    key={product.id}
-                    href={`/product/${product.id}`}
-                    onClick={() => setResults([])}
-                    className="flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 p-2 rounded cursor-pointer"
-                  >
-                    <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      className="w-50 h-50 object-contain mb-2 transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <p className="text-sm font-medium group-hover:text-indigo-600 transition">
-                      {product.name}
-                    </p>
-                    <p className="text-indigo-600 font-bold">{product.price} JD</p>
-                  </Link>
-                ))}
-              </div>
-            </>
-          )}
+     {/* Results dropdown */}
+{value && (loading || results.length > 0 || (!loading && results.length === 0)) && (
+  <div
+    ref={dropdownRef}
+    className="absolute top-full left-0 w-full bg-white shadow-lg rounded mt-2 z-50 p-4 transition-opacity duration-200"
+  >
+    {loading ? (
+      <p className="text-gray-500 text-center">Searching...</p>
+    ) : results.length > 0 ? (
+      <>
+        <p className="text-gray-500 text-sm mb-3">Related Products</p>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {results.map((product) => (
+            <Link
+              key={product.id}
+              href={`/product/${product.id}`}
+              onClick={() => setResults([])}
+              className="flex flex-col items-center text-center transition-transform duration-300 transform hover:scale-105 p-2 rounded cursor-pointer"
+            >
+              <img
+                src={product.imageUrl}
+                alt={product.name}
+                className="w-50 h-50 object-contain mb-2 transition-transform duration-300 group-hover:scale-105"
+              />
+              <p className="text-sm font-medium group-hover:text-indigo-600 transition">
+                {product.name}
+              </p>
+              <p className="text-indigo-600 font-bold">{product.price} JD</p>
+            </Link>
+          ))}
         </div>
-      )}
+      </>
+    ) : (
+      <p className="text-gray-500 text-center">No results found.</p>
+    )}
+  </div>
+)}
+
     </div>
   );
 }
