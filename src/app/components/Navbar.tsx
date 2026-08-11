@@ -2,7 +2,11 @@
 
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUser,
+  faCartShopping,
+  faChevronDown,
+} from "@fortawesome/free-solid-svg-icons";
 import { useAuth } from "../../context/AuthContext";
 import { useRouter, usePathname } from "next/navigation";
 import { toast } from "react-hot-toast";
@@ -19,6 +23,49 @@ import {
   faWhatsapp,
 } from "@fortawesome/free-brands-svg-icons";
 
+const categories = [
+  {
+    name: "Console",
+    subcategories: ["PlayStation", "Xbox", "Nintendo", "Consoles"],
+  },
+  {
+    name: "Gaming Accessories",
+    subcategories: [
+      "Headset",
+      "Keyboards",
+      "Mouse",
+      "Mousepad",
+      "Controllers",
+      "Earphone",
+      "Speakers",
+    ],
+  },
+  {
+    name: "Streaming",
+    subcategories: ["Microphones", "Webcams", "Capture Cards", "Lighting"],
+  },
+  {
+    name: "PC & Laptop Zone",
+    subcategories: ["Laptops", "PCs", "Components", "Monitors"],
+  },
+  {
+    name: "Simulators",
+    subcategories: ["Racing", "Flight", "Farming"],
+  },
+  {
+    name: "Gaming Chairs & Desk",
+    subcategories: ["Chairs", "Desks", "Accessories"],
+  },
+  {
+    name: "Lights",
+    subcategories: ["LED Strips", "Lamps", "Smart Lighting"],
+  },
+  {
+    name: "Collectables",
+    subcategories: ["Figures", "Posters", "Apparel"],
+  },
+];
+
 export default function Navbar() {
   const { user, isAuthenticated, logout } = useAuth();
   const router = useRouter();
@@ -30,6 +77,7 @@ export default function Navbar() {
   const [profileOpen, setProfileOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showSubMenu, setShowSubMenu] = useState(true);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -231,8 +279,9 @@ export default function Navbar() {
           </button>
         </div>
       </nav>
-      <header className="sticky top-0 z-40 bg-white shadow-[0_4px_6px_rgba(0,0,0,0.1)]">
-        <div className="container mx-auto grid grid-cols-12 items-center">
+      <div className="sticky top-0 z-50">
+        <header className="bg-white shadow-[0_4px_6px_rgba(0,0,0,0.1)]">
+          <div className="container mx-auto grid grid-cols-12 items-center">
           {/* Logo - 20% */}
           <div className="col-span-2 flex items-center gap-2 text-xl">
             <Link href="/" className="flex items-center gap-2 text-xl">
@@ -345,23 +394,55 @@ export default function Navbar() {
           </div>
         </div>
       </header>
-      {/* Toggleable sub‑menu */}
-      <ul
-        className={`transition-all duration-300 bg-indigo-500 text-white flex justify-center gap-6 py-2 ${
+      {/* Category dropdown menu */}
+      <div
+        className={`relative transition-all duration-300 bg-indigo-500 text-white ${
           showSubMenu
             ? "opacity-100 translate-y-0"
             : "opacity-0 -translate-y-4 pointer-events-none"
         }`}
       >
-        <li>Console</li>
-        <li>Gaming Accessories</li>
-        <li>Streaming</li>
-        <li>PC & Laptop Zone</li>
-        <li>Simulators</li>
-        <li>Gaming Chairs & Desk</li>
-        <li>Lights</li>
-        <li>Collectables</li>
-      </ul>
+        <ul className="container mx-auto flex justify-center gap-1 py-0">
+          {categories.map((cat) => (
+            <li
+              key={cat.name}
+              className="relative z-10 group"
+              onMouseEnter={() => setActiveCategory(cat.name)}
+              onMouseLeave={() => setActiveCategory(null)}
+            >
+              <button
+                type="button"
+                className="flex items-center gap-1 px-4 py-2 hover:bg-indigo-600 transition cursor-pointer"
+                onClick={() =>
+                  setActiveCategory(activeCategory === cat.name ? null : cat.name)
+                }
+              >
+                {cat.name}
+                <FontAwesomeIcon
+                  icon={faChevronDown}
+                  className="text-xs transition-transform group-hover:rotate-180"
+                />
+              </button>
+
+              {activeCategory === cat.name && (
+                <ul className="absolute left-0 top-full bg-white text-gray-800 shadow-lg min-w-[220px] py-2 z-50 border-t-2 border-indigo-500">
+                  {cat.subcategories.map((sub) => (
+                    <li key={sub}>
+                      <Link
+                        href={`/store?category=${encodeURIComponent(sub)}`}
+                        className="block px-4 py-2 hover:bg-indigo-50 hover:text-indigo-700 transition"
+                      >
+                        {sub}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+      </div>
       {/* Sidebar itself */}
       <CartSidebar
         isOpen={isCartOpen}
@@ -399,7 +480,7 @@ export default function Navbar() {
         <>
           {/* Overlay behind cart sidebar */}
           <div
-            className="fixed inset-0 bg-gradient-to-l from-black/70 to-transparent z-40 transition-opacity duration-300 ease-in-out"
+            className="fixed inset-0 bg-gradient-to-l from-black/70 to-transparent z-[60] transition-opacity duration-300 ease-in-out"
             onClick={() => setIsCartOpen(false)}
           />
         </>

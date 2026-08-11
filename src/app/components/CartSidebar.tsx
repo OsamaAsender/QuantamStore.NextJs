@@ -21,7 +21,7 @@ const CartSidebar = ({ isOpen, onClose }: CartSidebarProps) => {
 
   return (
     <aside
-      className={`fixed font-mono top-0 right-0 h-full w-80 bg-white shadow-lg z-50 flex flex-col transform transition-transform duration-300 ease-in-out ${
+      className={`fixed font-mono top-0 right-0 h-full w-80 bg-white shadow-lg z-[70] flex flex-col transform transition-transform duration-300 ease-in-out ${
         isOpen
           ? "translate-x-0 pointer-events-auto"
           : "translate-x-full pointer-events-none"
